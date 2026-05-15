@@ -1,0 +1,11 @@
+D:\DuyCMS_Solution\Cms.data\bin\Debug\net8.0\Cms.data.deps.json
+D:\DuyCMS_Solution\Cms.data\bin\Debug\net8.0\Cms.data.dll
+D:\DuyCMS_Solution\Cms.data\bin\Debug\net8.0\Cms.data.pdb
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\Cms.data.GeneratedMSBuildEditorConfig.editorconfig
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\Cms.data.AssemblyInfoInputs.cache
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\Cms.data.AssemblyInfo.cs
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\Cms.data.csproj.CoreCompileInputs.cache
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\Cms.data.dll
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\refint\Cms.data.dll
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\Cms.data.pdb
+D:\DuyCMS_Solution\Cms.data\obj\Debug\net8.0\ref\Cms.data.dll
