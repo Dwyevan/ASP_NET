@@ -1,36 +1,114 @@
 ﻿@model IEnumerable<Cms.data.Entities.Product>
 
-<table class="table">
+@{
+    // ÁP DỤNG LAYOUT ADMIN CHO ĐỒNG BỘ HỆ THỐNG
+    Layout = "_LayoutAdmin";
+}
 
-    <thead>
+<div class="container mt-2">
 
-        <tr>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary m-0">
+            DANH SÁCH PRODUCT
+        </h2>
+        <a asp-action="Create" class="btn btn-success fw-bold">
+            <i class="bi bi-plus-circle-fill me-1"></i> Add Product
+        </a>
+    </div>
 
-            <th>ID</th>
+    <form method="get" class="row mb-4">
+        <div class="col-md-9">
+            <input name="keyword"
+                   class="form-control"
+                   placeholder="Nhập tên sản phẩm để tìm kiếm..."
+                   value="@Context.Request.Query["keyword"]" />
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary w-100 fw-bold">
+                <i class="bi bi-search me-1"></i> Search
+            </button>
+        </div>
+    </form>
 
-            <th>Name</th>
+    <div class="card shadow">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th style="width: 120px;">Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th style="width: 130px;">Price</th>
+                        <th style="width: 90px;">Stock</th>
+                        <th style="width: 140px;">Category</th>
+                        <th style="width: 160px;">Chức năng</th> @* Bổ sung cột xử lý thao tác dữ liệu *@
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center fw-bold">@item.Id</td>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl"
+                                             width="60"
+                                             height="60"
+                                             style="object-fit:cover"
+                                             class="rounded border shadow-sm"
+                                             onerror="this.onerror=null; this.src='https://placehold.co/60x60?text=No+Image';" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">No Image</span>
+                                    }
+                                </td>
+                                <td class="fw-bold text-dark">@item.Name</td>
 
-            <th>Price</th>
+                                <td class="text-muted small" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    @item.Description
+                                </td>
 
-        </tr>
+                                <td class="text-danger fw-bold text-end pe-3">
+                                    @item.Price.ToString("#,##0") đ
+                                </td>
+                                <td class="text-center fw-bold text-secondary">@item.StockQuantity</td>
+                                <td class="text-center">
+                                    @if (item.CategoryProduct != null)
+                                    {
+                                        <span class="badge bg-info text-dark fw-bold">@item.CategoryProduct.Name</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Chưa phân loại</span>
+                                    }
+                                </td>
 
-    </thead>
-
-    <tbody>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-
-                <td>@item.Id</td>
-
-                <td>@item.Name</td>
-
-                <td>@item.Price</td>
-
-            </tr>
-        }
-
-    </tbody>
-
-</table>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning fw-bold text-dark me-1">
+                                        <i class="bi bi-pencil-square"></i> Sửa
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger fw-bold" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                        <i class="bi bi-trash-fill"></i> Xóa
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-danger fw-bold py-4">
+                                Không tìm thấy sản phẩm nào!
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

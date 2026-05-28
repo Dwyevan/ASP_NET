@@ -1,0 +1,36 @@
+﻿@model Cms.data.Entities.CategoryProduct
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-2">
+    <h2 class="fw-bold text-warning mb-4"><i class="bi bi-pencil-square"></i> CẬP NHẬT DANH MỤC</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="form-control" required />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Mô tả chi tiết</label>
+                    <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-warning fw-bold text-dark px-4 me-2">
+                        <i class="bi bi-check-circle"></i> Cập nhật thay đổi
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        <i class="bi bi-arrow-return-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

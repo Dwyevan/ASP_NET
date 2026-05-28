@@ -1,0 +1,64 @@
+﻿@model Cms.data.Entities.Product
+@{
+    // ÁP DỤNG LAYOUT ADMIN CHO ĐỒNG BỘ HỆ THỐNG
+    Layout = "_LayoutAdmin";
+}
+<div class="container mt-4">
+    <h2 class="fw-bold text-success">THÊM PRODUCT</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3 fw-bold"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tên sản phẩm</label>
+                    <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm..." />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Giá bán (Price)</label>
+                    <input asp-for="Price" type="number" class="form-control" placeholder="Nhập giá bán..." />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Số lượng tồn kho (Stock Quantity)</label>
+                    <input asp-for="StockQuantity" type="number" class="form-control" placeholder="Nhập số lượng..." />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Danh mục sản phẩm (Category)</label>
+                    <select asp-for="CategoryProductId" class="form-select">
+                        <option value="">-- Chọn danh mục sản phẩm --</option>
+                        @if (ViewBag.CategoriesProducts != null)
+                        {
+                            foreach (var c in ViewBag.CategoriesProducts)
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mô tả sản phẩm</label>
+                    <textarea asp-for="Description" rows="3" class="form-control" placeholder="Nhập mô tả ngắn..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Ảnh URL</label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="Ví dụ: /img/xiaomi.jpg" />
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success fw-bold text-white px-4">
+                        Save Product
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
