@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Cms.data.Entities.Order>
+
+<div class="container mt-4">
+
+    <h2 class="text-success">
+
+        DANH SÁCH ĐƠN HÀNG
+
+    </h2>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>CustomerId</th>
+
+                <th>Order Date</th>
+
+                <th>Total</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+
+                <tr>
+
+                    <td>@item.Id</td>
+
+                    <td>@item.CustomerId</td>
+
+                    <td>@item.OrderDate</td>
+
+                    <td>@item.TotalAmount</td>
+
+                </tr>
+
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

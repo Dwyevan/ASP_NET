@@ -1,0 +1,235 @@
+﻿@* @model IEnumerable<Cms.data.Entities.Post>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">QUẢN TRỊ NỘI DUNG</h2>
+        <a asp-action="Create" class="btn btn-success shadow">Viết bài mới</a>
+    </div>
+
+    <table class="table table-hover align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Ảnh</th>
+                <th>Tiêu đề</th>
+                <th class="text-center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td><img src="@item.ImageUrl" class="rounded" style="width:80px; height:50px; object-fit:cover" /></td>
+                    <td class="fw-bold">@item.Title</td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Xem</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" onclick="return confirm('Xóa bài này?')">Xóa</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div> *@
+@model IEnumerable<Cms.data.Entities.Post>
+
+<div class="container py-4">
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <h2 class="fw-bold text-primary">
+
+                QUẢN LÝ BÀI VIẾT
+
+            </h2>
+
+        </div>
+
+        <div class="col-md-6 text-end">
+
+            <a asp-action="Create"
+               class="btn btn-success">
+
+                + Viết bài mới
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-hover align-middle text-center">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th style="width:70px">
+
+                            ID
+
+                        </th>
+
+                        <th style="width:130px">
+
+                            Ảnh
+
+                        </th>
+
+                        <th>
+
+                            Tiêu đề
+
+                        </th>
+
+                        <th>
+
+                            Nội dung
+
+                        </th>
+
+                        <th style="width:160px">
+
+                            Ngày tạo
+
+                        </th>
+
+                        <th style="width:140px">
+
+                            Category
+
+                        </th>
+
+                        <th style="width:220px">
+
+                            Thao tác
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+
+                                <td>
+
+                                    @item.Id
+
+                                </td>
+
+                                <td>
+
+                                    <img src="@item.ImageUrl"
+                                         class="rounded"
+                                         width="100"
+                                         height="60"
+                                         style="object-fit:cover" />
+
+                                </td>
+
+                                <td class="fw-semibold">
+
+                                    @item.Title
+
+                                </td>
+
+                                <td>
+
+                                    @item.Content
+
+                                </td>
+
+                                <td>
+
+                                    @item.CreatedDate.ToString("dd/MM/yyyy")
+
+                                </td>
+
+                                <td>
+
+                                    @(item.Category != null
+                                                                ? item.Category.Name
+                                                                : "Không có")
+
+                        </td>
+
+                                <td>
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm text-white">
+
+                                            Xem
+
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm">
+
+                                            Sửa
+
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Bạn có chắc muốn xóa?')">
+
+                                            Xóa
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                                        }
+
+                    }
+                    else
+                    {
+
+                        <tr>
+
+                            <td colspan="7">
+
+                                Không có dữ liệu bài viết
+
+                            </td>
+
+                        </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Cms.data.Entities.CategoryProduct>
+
+<div class="container mt-4">
+
+    <h2>
+
+        DANH SÁCH CATEGORY PRODUCT
+
+    </h2>
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Name</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.Id</td>
+
+                    <td>@item.Name</td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

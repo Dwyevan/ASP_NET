@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CMS.BA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e184ba60e9375a0b6e0a6b82b73534a9d4cb5660")]
 [assembly: System.Reflection.AssemblyProductAttribute("CMS.BA")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CMS.BA")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

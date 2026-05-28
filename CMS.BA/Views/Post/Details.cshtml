@@ -1,0 +1,98 @@
+﻿@model Cms.data.Entities.Post
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>
+
+                CHI TIẾT BÀI VIẾT
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="text-center mb-4">
+
+                <img src="@Model.ImageUrl"
+                     class="img-fluid rounded shadow"
+                     style="max-height:300px" />
+
+            </div>
+
+            <h2 class="fw-bold">
+
+                @Model.Title
+
+            </h2>
+
+            <hr />
+
+            <p>
+
+                <strong>
+
+                    Nội dung:
+
+                </strong>
+
+            </p>
+
+            <p>
+
+                @Model.Content
+
+            </p>
+
+            <hr />
+
+            <p>
+
+                <strong>
+
+                    Ngày tạo:
+
+                </strong>
+
+                @Model.CreatedDate.ToString("dd/MM/yyyy")
+
+            </p>
+
+            <p>
+
+                <strong>
+
+                    Category:
+
+                </strong>
+
+                @(Model.Category != null
+                                ? Model.Category.Name
+                                : "Không có")
+
+            </p>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-warning">
+
+                Chỉnh sửa
+
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+
+                Quay lại
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,67 @@
+﻿@model Cms.data.Entities.User
+
+<div class="container mt-4">
+
+    <h2 class="text-warning">
+
+        CHỈNH SỬA USER
+
+    </h2>
+
+    <form asp-action="Edit"
+          method="post">
+
+        <input hidden asp-for="Id" />
+
+        <div class="mb-3">
+
+            <label>Username</label>
+
+            <input asp-for="Username"
+                   class="form-control" />
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Password</label>
+
+            <input asp-for="PasswordHash"
+                   class="form-control" />
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Full Name</label>
+
+            <input asp-for="FullName"
+                   class="form-control" />
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Role</label>
+
+            <input asp-for="Role"
+                   class="form-control" />
+
+        </div>
+
+        <button class="btn btn-warning">
+
+            Update
+
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+
+            Quay lại
+
+        </a>
+
+    </form>
+
+</div>
