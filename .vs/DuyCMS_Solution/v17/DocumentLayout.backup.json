@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|c:\\users\\ligion\\downloads\\duycms_solution\\duycms_solution\\cms.ba\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|solutionrelative:cms.ba\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|c:\\users\\ligion\\downloads\\duycms_solution\\duycms_solution\\cms.ba\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|solutionrelative:cms.ba\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -127,10 +131,6 @@
       "RelativeMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|solutionrelative:cms.ba\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|c:\\users\\ligion\\downloads\\duycms_solution\\duycms_solution\\cms.ba\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|solutionrelative:cms.ba\\controllers\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|c:\\users\\ligion\\downloads\\duycms_solution\\duycms_solution\\cms.ba\\controllers\\categorycontroller.cs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CF4DC418-0570-402D-8B48-D8914E7B8435}|CMS.BA\\CMS.BA.csproj|solutionrelative:cms.ba\\controllers\\categorycontroller.cs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -253,20 +253,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Cart\\Index.cshtml",
-              "RelativeDocumentMoniker": "CMS.BA\\Views\\Cart\\Index.cshtml",
-              "ToolTip": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Cart\\Index.cshtml",
-              "RelativeToolTip": "CMS.BA\\Views\\Cart\\Index.cshtml",
-              "ViewState": "AgIAABsAAAAAAAAAAAAuwE0AAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T11:03:07.44Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "CartController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\CartController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\CartController.cs",
@@ -274,12 +261,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\CartController.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAAiwFUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T11:02:27.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T11:02:27.842Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "SessionExtensions.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Helpers\\SessionExtensions.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Helpers\\SessionExtensions.cs",
@@ -287,12 +273,11 @@
               "RelativeToolTip": "CMS.BA\\Helpers\\SessionExtensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T11:01:22.452Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T11:01:22.452Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "CartItem.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Models\\CartItem.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Models\\CartItem.cs",
@@ -300,12 +285,11 @@
               "RelativeToolTip": "CMS.BA\\Models\\CartItem.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T10:58:22.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:58:22.288Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Shop\\Index.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Shop\\Index.cshtml",
@@ -313,12 +297,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Shop\\Index.cshtml",
               "ViewState": "AgIAABYAAAAAAAAAAAAiwDgAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:53:58.561Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:53:58.561Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "ShopController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\ShopController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\ShopController.cs",
@@ -326,12 +309,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\ShopController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T10:53:37.132Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:53:37.132Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "_LayoutCustomer.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Shared\\_LayoutCustomer.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Shared\\_LayoutCustomer.cshtml",
@@ -339,12 +321,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Shared\\_LayoutCustomer.cshtml",
               "ViewState": "AgIAABUAAAAAAAAAAAAAAB0AAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:53:15.21Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:53:15.21Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Program.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Program.cs",
@@ -357,7 +338,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 0,
+              "Title": "PostController.cs",
+              "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\PostController.cs",
+              "RelativeDocumentMoniker": "CMS.BA\\Controllers\\PostController.cs",
+              "ToolTip": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\PostController.cs*",
+              "RelativeToolTip": "CMS.BA\\Controllers\\PostController.cs*",
+              "ViewState": "AgIAADgAAAAAAAAAAAAYwFsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T08:39:14.969Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Cart\\Index.cshtml",
+              "RelativeDocumentMoniker": "CMS.BA\\Views\\Cart\\Index.cshtml",
+              "ToolTip": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Cart\\Index.cshtml",
+              "RelativeToolTip": "CMS.BA\\Views\\Cart\\Index.cshtml",
+              "ViewState": "AgIAABsAAAAAAAAAAAAuwE0AAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-28T11:03:07.44Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
               "Title": "CategoriesProductController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\CategoriesProductController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\CategoriesProductController.cs",
@@ -365,12 +371,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\CategoriesProductController.cs",
               "ViewState": "AgIAAC8AAAAAAAAAAAAuwGEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T09:07:54.07Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:07:54.07Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\CategoriesProduct\\Index.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\CategoriesProduct\\Index.cshtml",
@@ -378,12 +383,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\CategoriesProduct\\Index.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAiwDEAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T09:09:23.291Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:09:23.291Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "CustomerController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\CustomerController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\CustomerController.cs",
@@ -391,12 +395,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\CustomerController.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAuwDMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T09:11:16.909Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:11:16.909Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Customer\\Index.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Customer\\Index.cshtml",
@@ -404,12 +407,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Customer\\Index.cshtml",
               "ViewState": "AgIAABQAAAAAAAAAAAAuwDcAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T09:11:35.751Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:11:35.751Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\OrderDetail\\Index.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\OrderDetail\\Index.cshtml",
@@ -417,12 +419,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\OrderDetail\\Index.cshtml",
               "ViewState": "AgIAAAQAAAAAAAAAAAAqwCQAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T09:12:41.156Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:12:41.156Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\HomeController.cs",
@@ -430,12 +431,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAuwCYAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T08:04:10.102Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T08:04:10.102Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Home\\Index.cshtml",
@@ -443,12 +443,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAADkAAAAAAAAAAAAiwFsAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-15T06:49:29.593Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T06:49:29.593Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "_LayoutAdmin.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Shared\\_LayoutAdmin.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Shared\\_LayoutAdmin.cshtml",
@@ -456,12 +455,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Shared\\_LayoutAdmin.cshtml",
               "ViewState": "AgIAACQAAAAAAAAAAAAuwFYAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:23:01.638Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:23:01.638Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\Cms.data\\Entities\\User.cs",
               "RelativeDocumentMoniker": "Cms.data\\Entities\\User.cs",
@@ -469,12 +467,11 @@
               "RelativeToolTip": "Cms.data\\Entities\\User.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T06:29:13.753Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T06:29:13.753Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "OrderDetail.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\Cms.data\\Entities\\OrderDetail.cs",
               "RelativeDocumentMoniker": "Cms.data\\Entities\\OrderDetail.cs",
@@ -486,7 +483,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\CategoriesProduct\\Edit.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\CategoriesProduct\\Edit.cshtml",
@@ -494,12 +491,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\CategoriesProduct\\Edit.cshtml",
               "ViewState": "AgIAAAEAAAAAAAAAAAAiwCMAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:47:47.12Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:47:47.12Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Order\\Index.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Order\\Index.cshtml",
@@ -507,12 +503,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Order\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T09:12:03.825Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:12:03.825Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\CategoriesProduct\\Create.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\CategoriesProduct\\Create.cshtml",
@@ -520,12 +515,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\CategoriesProduct\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:47:33.86Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:47:33.86Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 31,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\UserController.cs",
@@ -537,7 +531,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Product\\Edit.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Product\\Edit.cshtml",
@@ -545,12 +539,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Product\\Edit.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAuwCUAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:27:25.108Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:27:25.108Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\AccountController.cs",
@@ -558,12 +551,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\AccountController.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAmwC0AAABtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T10:28:48.087Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:28:48.087Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Account\\Login.cshtml",
@@ -571,12 +563,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Account\\Login.cshtml",
               "ViewState": "AgIAAEIAAAAAAAAAAAAiwGQAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:29:37.313Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:29:37.313Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "Details.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Order\\Details.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Order\\Details.cshtml",
@@ -584,12 +575,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Order\\Details.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:19:28.938Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:19:28.938Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Product\\Index.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Product\\Index.cshtml",
@@ -597,12 +587,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Product\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T09:10:28.548Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:10:28.548Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Views\\Product\\Create.cshtml",
               "RelativeDocumentMoniker": "CMS.BA\\Views\\Product\\Create.cshtml",
@@ -610,12 +599,11 @@
               "RelativeToolTip": "CMS.BA\\Views\\Product\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T10:01:34.589Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T10:01:34.589Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "ProductController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\ProductController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\ProductController.cs",
@@ -623,12 +611,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\ProductController.cs",
               "ViewState": "AgIAAE4AAAAAAAAAAAAuwIAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T09:09:49.348Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:09:49.348Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "OrderController.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\OrderController.cs",
               "RelativeDocumentMoniker": "CMS.BA\\Controllers\\OrderController.cs",
@@ -636,24 +623,11 @@
               "RelativeToolTip": "CMS.BA\\Controllers\\OrderController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T09:11:50.909Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T09:11:50.909Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
-              "Title": "PostController.cs",
-              "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\PostController.cs",
-              "RelativeDocumentMoniker": "CMS.BA\\Controllers\\PostController.cs",
-              "ToolTip": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\Controllers\\PostController.cs",
-              "RelativeToolTip": "CMS.BA\\Controllers\\PostController.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAwwH4AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T08:39:14.969Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "Product.cs",
               "DocumentMoniker": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\Cms.data\\Entities\\Product.cs",
               "RelativeDocumentMoniker": "Cms.data\\Entities\\Product.cs",
@@ -661,8 +635,7 @@
               "RelativeToolTip": "Cms.data\\Entities\\Product.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAGYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T06:33:54.037Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T06:33:54.037Z"
             },
             {
               "$type": "Document",

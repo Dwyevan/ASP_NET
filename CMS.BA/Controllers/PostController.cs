@@ -86,7 +86,7 @@ namespace CMS.Backend.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Nếu dữ liệu bị lỗi khác, nạp lại danh sách Category cho Dropdown
+            // Nếu dữ liệu bị lỗi khác, nạp lại danh sách Category cho Dropdown và trả về View với model lỗi
             ViewBag.Categories = _context.Categories.ToList();
             return View(model);
         }
