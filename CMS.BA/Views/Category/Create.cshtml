@@ -1,0 +1,47 @@
+@model Cms.data.Entities.Category
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm Danh mục Mới";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm rounded-3 border-0">
+                <div class="card-header bg-white p-3 border-bottom-0">
+                    <h4 class="fw-bold mb-0 text-success">
+                        <i class="bi bi-plus-circle me-2"></i>THÊM DANH MỤC MỚI
+                    </h4>
+                </div>
+                
+                <div class="card-body p-4 bg-light">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục..." required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả ngắn gọn..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">
+                                <i class="bi bi-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-success px-4 shadow-sm">
+                                <i class="bi bi-save"></i> Lưu dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

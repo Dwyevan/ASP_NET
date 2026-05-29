@@ -1,12 +1,15 @@
-﻿using CMS.Data;
+using CMS.Data;
 using Cms.data.Entities; // Giữ nguyên cách đặt tên namespace hiện tại của bạn
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,11 +22,16 @@ namespace CMS.Backend.Controllers
         //----------------------------------
         // HIỂN THỊ DANH SÁCH POST
         //----------------------------------
-        public IActionResult Index()
+        public IActionResult Index(int? id)
         {
-            var posts = _context.Posts
-                .Include(x => x.Category)
-                .ToList();
+            var query = _context.Posts.Include(x => x.Category).AsQueryable();
+
+            if (id.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == id.Value);
+            }
+
+            var posts = query.OrderByDescending(p => p.CreatedDate).ToList();
 
             return View(posts);
         }

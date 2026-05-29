@@ -1,10 +1,13 @@
-﻿using CMS.Data;
+using CMS.Data;
 using Cms.data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace CMS.BA.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;

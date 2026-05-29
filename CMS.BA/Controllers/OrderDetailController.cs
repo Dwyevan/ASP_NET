@@ -1,8 +1,9 @@
-﻿using CMS.Data;
+using CMS.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.Backend.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class OrderDetailController
         : Controller
     {

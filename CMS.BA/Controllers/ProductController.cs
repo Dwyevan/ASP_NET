@@ -1,11 +1,14 @@
-﻿using CMS.Data;
+using CMS.Data;
 using Cms.data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; // BẮT BUỘC: Để sử dụng hàm .Include() liên kết dữ liệu bảng
 using System.Linq;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -124,6 +127,23 @@ namespace CMS.Backend.Controllers
 
             // Xóa xong quay trở lại danh sách trang sản phẩm
             return RedirectToAction("Index");
+        }
+
+        //--------------------------------------------------
+        // 7. CHỨC NĂNG XEM CHI TIẾT SẢN PHẨM (DETAILS)
+        //--------------------------------------------------
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var product = _context.Products
+                .Include(x => x.CategoryProduct)
+                .FirstOrDefault(x => x.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
         }
     }
 }

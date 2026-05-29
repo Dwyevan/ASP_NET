@@ -1,18 +1,19 @@
 using System.Diagnostics;
 using CMS.BA.Models;
 using Microsoft.AspNetCore.Mvc;
-using CMS.Data; // B?T BU?C: Th�m ?? g?i ???c ApplicationDbContext
-using System.Linq; // B?T BU?C: Th�m ?? d�ng h�m Count() v� Sum()
+using CMS.Data; // BẮT BUỘC: Thêm để gọi được ApplicationDbContext
+using System.Linq; // BẮT BUỘC: Thêm để dùng hàm Count() và Sum()
 
 namespace CMS.BA.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class HomeController : Controller
     {
-        // Gi? nguy�n Logger c?a b?n v� khai b�o th�m Context g?i Database
+        // Giữ nguyên Logger của bạn và khai báo thêm Context gọi Database
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
 
-        // Ti�m c? 2 d?ch v? v�o Constructor
+        // Tiêm cả 2 dịch vụ vào Constructor
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
@@ -20,20 +21,20 @@ namespace CMS.BA.Controllers
         }
 
         //--------------------------------------------------
-        // HI?N TH? TRANG CH? & T�NH TO�N S? LI?U DASHBOARD
+        // HIỂN THỊ TRANG CHỦ & TÍNH TOÁN SỐ LIỆU DASHBOARD
         //--------------------------------------------------
         public IActionResult Index()
         {
-            // 1. ??m t?ng s? l??ng S?n ph?m
+            // 1. Đếm tổng số lượng Sản phẩm
             ViewBag.TotalProducts = _context.Products.Count();
 
-            // 2. ??m t?ng s? l??ng ??n h�ng
+            // 2. Đếm tổng số lượng Đơn hàng
             ViewBag.TotalOrders = _context.Orders.Count();
 
-            // 3. ??m t?ng s? l??ng Kh�ch h�ng
+            // 3. Đếm tổng số lượng Khách hàng
             ViewBag.TotalCustomers = _context.Customers.Count();
 
-            // 4. T�nh t?ng doanh thu (C?ng d?n c?t TotalAmount trong b?ng Orders)
+            // 4. Tính tổng doanh thu (Cộng dồn cột TotalAmount trong bảng Orders)
             ViewBag.TotalRevenue = _context.Orders.Any()
                 ? _context.Orders.Sum(o => o.TotalAmount)
                 : 0;
@@ -42,7 +43,7 @@ namespace CMS.BA.Controllers
         }
 
         //--------------------------------------------------
-        // C�C H�M M?C ??NH C?A H? TH?NG (GI? NGUY�N)
+        // CÁC HÀM MẶC ĐỊNH CỦA HỆ THỐNG (GIỮ NGUYÊN)
         //--------------------------------------------------
         public IActionResult Privacy()
         {

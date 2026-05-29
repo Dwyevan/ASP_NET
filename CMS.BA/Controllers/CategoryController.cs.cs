@@ -1,12 +1,12 @@
-﻿
-using Cms.data;
-using Cms.data.Entities;
 using CMS.Data;
+using Cms.data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CMS.BA.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,8 +19,56 @@ namespace CMS.BA.Controllers
         public IActionResult Index()
         {
             var list = _context.Categories.ToList();
-
             return View(list);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(Category model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Categories.Add(model);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var category = _context.Categories.Find(id);
+            if (category == null) return NotFound();
+            return View(category);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Category model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Categories.Update(model);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var category = _context.Categories.Find(id);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using CMS.Data;
+using CMS.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq; // Bắt buộc thêm để dùng được các hàm truy vấn Where, ToList
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;

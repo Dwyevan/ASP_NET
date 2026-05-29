@@ -1,235 +1,106 @@
-﻿@* @model IEnumerable<Cms.data.Entities.Post>
-
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">QUẢN TRỊ NỘI DUNG</h2>
-        <a asp-action="Create" class="btn btn-success shadow">Viết bài mới</a>
-    </div>
-
-    <table class="table table-hover align-middle shadow-sm">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Ảnh</th>
-                <th>Tiêu đề</th>
-                <th class="text-center">Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td><img src="@item.ImageUrl" class="rounded" style="width:80px; height:50px; object-fit:cover" /></td>
-                    <td class="fw-bold">@item.Title</td>
-                    <td class="text-center">
-                        <div class="btn-group">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Xem</a>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" onclick="return confirm('Xóa bài này?')">Xóa</a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div> *@
 @model IEnumerable<Cms.data.Entities.Post>
 
-<div class="container py-4">
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Bài viết";
+}
 
-    <div class="row mb-4">
-
-        <div class="col-md-6">
-
-            <h2 class="fw-bold text-primary">
-
-                QUẢN LÝ BÀI VIẾT
-
-            </h2>
-
+<div class="container-fluid py-4">
+    <div class="card shadow-sm rounded-3 border-0">
+        <div class="card-header bg-white p-3 border-bottom-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="fw-bold mb-0 text-primary text-uppercase">
+                    <i class="bi bi-file-earmark-text me-2"></i>QUẢN LÝ BÀI VIẾT
+                </h4>
+                
+                <div class="d-flex gap-3 align-items-center">
+                    <!-- Search Bar -->
+                    <form class="d-flex" asp-action="Index" method="get">
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm bài viết..." aria-label="Tìm kiếm">
+                            <button class="btn btn-outline-secondary" type="submit" title="Tìm kiếm">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Nút Viết bài mới -->
+                    <a asp-action="Create" class="btn btn-success btn-sm rounded-pill px-3 shadow-sm text-nowrap">
+                        <i class="bi bi-plus-circle me-1"></i> Viết bài mới
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-6 text-end">
-
-            <a asp-action="Create"
-               class="btn btn-success">
-
-                + Viết bài mới
-
-            </a>
-
-        </div>
-
-    </div>
-
-    <div class="card shadow">
-
-        <div class="card-body">
-
-            <table class="table table-hover align-middle text-center">
-
-                <thead class="table-dark">
-
-                    <tr>
-
-                        <th style="width:70px">
-
-                            ID
-
-                        </th>
-
-                        <th style="width:130px">
-
-                            Ảnh
-
-                        </th>
-
-                        <th>
-
-                            Tiêu đề
-
-                        </th>
-
-                        <th>
-
-                            Nội dung
-
-                        </th>
-
-                        <th style="width:160px">
-
-                            Ngày tạo
-
-                        </th>
-
-                        <th style="width:140px">
-
-                            Category
-
-                        </th>
-
-                        <th style="width:220px">
-
-                            Thao tác
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @if (Model.Any())
-                    {
-
-                        @foreach (var item in Model)
-                        {
-
-                            <tr>
-
-                                <td>
-
-                                    @item.Id
-
-                                </td>
-
-                                <td>
-
-                                    <img src="@item.ImageUrl"
-                                         class="rounded"
-                                         width="100"
-                                         height="60"
-                                         style="object-fit:cover" />
-
-                                </td>
-
-                                <td class="fw-semibold">
-
-                                    @item.Title
-
-                                </td>
-
-                                <td>
-
-                                    @item.Content
-
-                                </td>
-
-                                <td>
-
-                                    @item.CreatedDate.ToString("dd/MM/yyyy")
-
-                                </td>
-
-                                <td>
-
-                                    @(item.Category != null
-                                                                ? item.Category.Name
-                                                                : "Không có")
-
-                        </td>
-
-                                <td>
-
-                                    <div class="d-flex justify-content-center gap-2">
-
-                                        <a asp-action="Details"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-info btn-sm text-white">
-
-                                            Xem
-
-                                        </a>
-
-                                        <a asp-action="Edit"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-warning btn-sm">
-
-                                            Sửa
-
-                                        </a>
-
-                                        <a asp-action="Delete"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-danger btn-sm"
-                                           onclick="return confirm('Bạn có chắc muốn xóa?')">
-
-                                            Xóa
-
-                                        </a>
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-                                        }
-
-                    }
-                    else
-                    {
-
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered align-middle text-center mb-0">
+                    <thead class="table-light text-center fw-bold">
                         <tr>
-
-                            <td colspan="7">
-
-                                Không có dữ liệu bài viết
-
-                            </td>
-
+                            <th style="width: 5%;">ID</th>
+                            <th style="width: 20%;">Ảnh</th>
+                            <th style="width: 25%;" class="text-start">Tiêu đề</th>
+                            <th style="width: 25%;" class="text-start">Nội dung</th>
+                            <th style="width: 10%;">Ngày tạo</th>
+                            <th style="width: 10%;">Danh mục</th>
+                            <th style="width: 10%;">Thao tác</th>
                         </tr>
-
-                    }
-
-                </tbody>
-
-            </table>
-
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold text-secondary">@item.Id</td>
+                                    <td>
+                                        <img src="@item.ImageUrl" 
+                                             alt="@item.Title"
+                                             class="img-thumbnail border border-primary-subtle rounded"
+                                             style="width: 120px; height: 90px; object-fit: cover;"
+                                             onerror="this.src='https://placehold.co/120x90?text=No+Image'" />
+                                    </td>
+                                    <td class="text-start fw-bold text-dark">@item.Title</td>
+                                    <td class="text-start">
+                                        <span class="text-truncate d-inline-block text-muted" style="max-width: 250px;" title="@item.Content">
+                                            @item.Content
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-white">@(item.Category != null ? item.Category.Name : "Không có")</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm text-white shadow-sm" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm text-dark shadow-sm" title="Chỉnh sửa">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm shadow-sm" title="Xóa bài viết" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary opacity-50"></i>
+                                    <h5>Chưa có bài viết nào trong hệ thống.</h5>
+                                    <p class="mb-0">Hãy nhấn "Viết bài mới" để tạo bài viết đầu tiên!</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
-
     </div>
-
 </div>

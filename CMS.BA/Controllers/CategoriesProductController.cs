@@ -1,10 +1,13 @@
-﻿using CMS.Data;
+using CMS.Data;
 using Cms.data.Entities; // Bắt buộc: Thêm dòng này để gọi được thực thể CategoryProduct
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class CategoriesProductController : Controller
     {
         private readonly ApplicationDbContext _context;

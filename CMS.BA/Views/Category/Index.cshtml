@@ -1,27 +1,73 @@
-﻿
+@model IEnumerable<Cms.data.Entities.Category>
+
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Danh mục";
 }
 
-<h2 class="text-primary">DANH SÁCH DANH MỤC (DỮ LIỆU MẪU)</h2>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Tên danh mục</th>
-            <th>Mô tả</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container-fluid py-4">
+    <div class="card shadow-sm rounded-3 border-0">
+        <div class="card-header bg-white p-3 border-bottom-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="fw-bold mb-0 text-primary text-uppercase">
+                    <i class="bi bi-folder-fill me-2"></i>QUẢN LÝ DANH MỤC BÀI VIẾT
+                </h4>
+                
+                <div class="d-flex align-items-center">
+                    <!-- Nút Thêm mới -->
+                    <a asp-action="Create" class="btn btn-success btn-sm rounded-pill px-3 shadow-sm text-nowrap">
+                        <i class="bi bi-plus-circle me-1"></i> Thêm danh mục
+                    </a>
+                </div>
+            </div>
+        </div>
 
-
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered align-middle text-center mb-0">
+                    <thead class="table-light text-center fw-bold">
+                        <tr>
+                            <th style="width: 10%;">ID</th>
+                            <th style="width: 30%;" class="text-start">Tên danh mục</th>
+                            <th style="width: 40%;" class="text-start">Mô tả</th>
+                            <th style="width: 20%;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold text-secondary">@item.Id</td>
+                                    <td class="text-start fw-bold text-dark">@item.Name</td>
+                                    <td class="text-start text-muted">@item.Description</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm text-dark shadow-sm" title="Chỉnh sửa">
+                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm shadow-sm" title="Xóa danh mục" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này không? Các bài viết thuộc danh mục có thể bị ảnh hưởng.');">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary opacity-50"></i>
+                                    <h5>Chưa có danh mục nào trong hệ thống.</h5>
+                                    <p class="mb-0">Hãy nhấn "Thêm danh mục" để bắt đầu!</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
