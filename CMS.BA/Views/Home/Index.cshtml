@@ -1,90 +1,132 @@
-﻿@{
+@{
     // Ép trang chủ sử dụng giao diện Admin có thanh Sidebar bên trái
     Layout = "_LayoutAdmin";
 }
 
-<div class="container mt-2">
-    <h2 class="fw-bold text-primary mb-4">
-        <i class="bi bi-speedometer2"></i> TỔNG QUAN HỆ THỐNG
-    </h2>
+<style>
+    .hover-elevate { transition: transform 0.3s ease; }
+    .hover-elevate:hover { transform: translateY(-5px); }
+</style>
 
+<div class="container-fluid py-4">
+    <!-- Khu vực 1: 4 Thẻ Thống Kê -->
     <div class="row">
         <div class="col-md-3 mb-4">
-            <div class="card shadow border-0 border-start border-primary border-5 h-100 py-2">
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-elevate position-relative overflow-hidden">
                 <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
-                                Tổng Sản Phẩm
-                            </div>
-                            <div class="h3 mb-0 fw-bold text-gray-800">
-                                @ViewBag.TotalProducts
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-box-seam fs-1 text-primary opacity-50"></i>
-                        </div>
+                    <div class="fs-2 fw-bold text-dark">@ViewBag.TotalProducts</div>
+                    <div class="text-muted text-uppercase small">Tổng Sản Phẩm</div>
+                    <i class="bi bi-box-seam position-absolute bottom-0 end-0 m-3" style="font-size: 4rem; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-elevate position-relative overflow-hidden">
+                <div class="card-body">
+                    <div class="fs-2 fw-bold text-dark">@ViewBag.TotalOrders</div>
+                    <div class="text-muted text-uppercase small">Đơn Hàng</div>
+                    <i class="bi bi-cart-check position-absolute bottom-0 end-0 m-3" style="font-size: 4rem; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-elevate position-relative overflow-hidden">
+                <div class="card-body">
+                    <div class="fs-2 fw-bold text-dark">@ViewBag.TotalCustomers</div>
+                    <div class="text-muted text-uppercase small">Khách Hàng</div>
+                    <i class="bi bi-people position-absolute bottom-0 end-0 m-3" style="font-size: 4rem; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-elevate position-relative overflow-hidden">
+                <div class="card-body">
+                    <div class="fs-2 fw-bold text-dark">@String.Format("{0:N0} ₫", ViewBag.TotalRevenue ?? 0)</div>
+                    <div class="text-muted text-uppercase small">Doanh Thu</div>
+                    <i class="bi bi-currency-dollar position-absolute bottom-0 end-0 m-3" style="font-size: 4rem; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khu vực 2: Dữ liệu chi tiết & Thao tác nhanh -->
+    <div class="row">
+        <!-- ĐƠN HÀNG MỚI NHẤT -->
+        <div class="col-xl-8 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h5 class="fw-bold mb-0">📦 ĐƠN HÀNG MỚI NHẤT</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã ĐH</th>
+                                    <th>Khách hàng</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.RecentOrders != null)
+                                {
+                                    foreach (var order in ViewBag.RecentOrders)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold text-secondary">#@order.Id</td>
+                                            <td class="fw-semibold">@(order.Customer != null ? order.Customer.FullName : "Khách vãng lai")</td>
+                                            <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>
+                                                @if (order.Status == 0)
+                                                {
+                                                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                                }
+                                                else if (order.Status == 1)
+                                                {
+                                                    <span class="badge bg-info text-dark">Đang giao</span>
+                                                }
+                                                else if (order.Status == 2)
+                                                {
+                                                    <span class="badge bg-success">Đã xong</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">Không rõ</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">Chưa có đơn hàng nào</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3 mb-4">
-            <div class="card shadow border-0 border-start border-success border-5 h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
-                                Đơn Hàng Đã Đặt
-                            </div>
-                            <div class="h3 mb-0 fw-bold text-gray-800">
-                                @ViewBag.TotalOrders
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-cart-check fs-1 text-success opacity-50"></i>
-                        </div>
-                    </div>
+        <!-- THAO TÁC NHANH -->
+        <div class="col-xl-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h5 class="fw-bold mb-0">⚡ THAO TÁC NHANH</h5>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-4">
-            <div class="card shadow border-0 border-start border-info border-5 h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
-                                Khách Hàng
-                            </div>
-                            <div class="h3 mb-0 fw-bold text-gray-800">
-                                @ViewBag.TotalCustomers
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-people fs-1 text-info opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-4">
-            <div class="card shadow border-0 border-start border-warning border-5 h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
-                                Tổng Doanh Thu
-                            </div>
-                            <div class="h3 mb-0 fw-bold text-gray-800 text-danger">
-                                @(((decimal)ViewBag.TotalRevenue).ToString("#,##0")) đ
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-currency-dollar fs-1 text-warning opacity-50"></i>
-                        </div>
-                    </div>
+                <div class="card-body d-flex flex-column gap-3 mt-2">
+                    <a href="/Product/Create" class="btn btn-outline-primary btn-lg w-100 text-start fw-bold shadow-sm">
+                        <i class="bi bi-box-seam me-2"></i> Thêm Sản Phẩm Mới
+                    </a>
+                    <a href="/Post/Create" class="btn btn-outline-info btn-lg w-100 text-start fw-bold shadow-sm">
+                        <i class="bi bi-journal-text me-2"></i> Viết Bài Tin Tức
+                    </a>
+                    <a href="/Order/Index" class="btn btn-outline-success btn-lg w-100 text-start fw-bold shadow-sm">
+                        <i class="bi bi-cart-check me-2"></i> Xử Lý Đơn Hàng
+                    </a>
                 </div>
             </div>
         </div>

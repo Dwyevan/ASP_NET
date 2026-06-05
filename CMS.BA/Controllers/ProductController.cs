@@ -3,6 +3,9 @@ using Cms.data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; // BẮT BUỘC: Để sử dụng hàm .Include() liên kết dữ liệu bảng
 using System.Linq;
+using System.IO;
+using System;
+using Microsoft.AspNetCore.Http;
 
 using Microsoft.AspNetCore.Authorization;
 
@@ -51,7 +54,7 @@ namespace CMS.Backend.Controllers
         // 3. CHỨC NĂNG THÊM MỚI SẢN PHẨM (POST)
         //--------------------------------------------------
         [HttpPost]
-        public IActionResult Create(Product model)
+        public IActionResult Create(Product model, IFormFile? uploadImage)
         {
             // FIX LỖI CHẶN NÚT LƯU: Loại bỏ kiểm tra các thuộc tính liên kết bảng bị null trên form
             ModelState.Remove("CategoryProduct");
@@ -59,6 +62,19 @@ namespace CMS.Backend.Controllers
 
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + uploadImage.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        uploadImage.CopyTo(fileStream);
+                    }
+                    model.ImageUrl = "/uploads/" + uniqueFileName;
+                }
+
                 _context.Products.Add(model);
                 _context.SaveChanges(); // Lưu xuống SQL Server
 
@@ -92,7 +108,7 @@ namespace CMS.Backend.Controllers
         // 5. CHỨC NĂNG SỬA SẢN PHẨM (POST - LƯU CẬP NHẬT)
         //--------------------------------------------------
         [HttpPost]
-        public IActionResult Edit(Product model)
+        public IActionResult Edit(Product model, IFormFile? uploadImage)
         {
             // Loại bỏ kiểm tra thuộc tính liên kết bảng tránh lỗi xác thực ModelState.IsValid bị false
             ModelState.Remove("CategoryProduct");
@@ -100,6 +116,27 @@ namespace CMS.Backend.Controllers
 
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + uploadImage.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        uploadImage.CopyTo(fileStream);
+                    }
+                    model.ImageUrl = "/uploads/" + uniqueFileName;
+                }
+                else
+                {
+                    var existingProduct = _context.Products.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
+                    if (existingProduct != null && string.IsNullOrEmpty(model.ImageUrl))
+                    {
+                        model.ImageUrl = existingProduct.ImageUrl;
+                    }
+                }
+
                 _context.Products.Update(model); // Cập nhật thực thể dữ liệu mới thay cho bản cũ
                 _context.SaveChanges();           // Đẩy lệnh UPDATE chạy xuống SQL Server
 

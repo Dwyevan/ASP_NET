@@ -23,22 +23,38 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
         options.AccessDeniedPath = "/Account/PageNotFound";
     });
 
-// Thêm cấu hình CORS cho Web API
+// Thêm cấu hình CORS cho Web API (cho phép React Frontend gọi API)
 builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAll", policy => {
-        policy.AllowAnyOrigin()
+    options.AddPolicy("AllowReactApp", policy => {
+        policy.WithOrigins(
+                "http://localhost:3000",
+                "http://localhost:3001",
+                "https://localhost:3000",
+                "https://localhost:3001"
+              )
+              .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowCredentials();
     });
 });
 
+// Cấu hình Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
+
 var app = builder.Build();
+
+// Sử dụng Swagger
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-
     app.UseHsts();
 }
 
@@ -48,8 +64,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Bật CORS ngay sau UseRouting
-app.UseCors("AllowAll");
+// Bật CORS ngay sau UseRouting (TRƯỚC UseAuthorization)
+app.UseCors("AllowReactApp");
 
 // 2. BỔ SUNG DÒNG NÀY: Kích hoạt Middleware Session (BẮT BUỘC phải đặt giữa UseRouting và UseAuthorization)
 app.UseSession();

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 using Microsoft.AspNetCore.Authorization;
 
@@ -47,13 +49,26 @@ namespace CMS.Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Post model)
+        public IActionResult Create(Post model, IFormFile? uploadImage)
         {
             // Loại bỏ thuộc tính liên kết bảng khỏi danh sách kiểm tra validate
             ModelState.Remove("Category");
 
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + uploadImage.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        uploadImage.CopyTo(fileStream);
+                    }
+                    model.ImageUrl = "/uploads/" + uniqueFileName;
+                }
+
                 model.CreatedDate = DateTime.Now;
                 _context.Posts.Add(model);
                 _context.SaveChanges();
@@ -82,13 +97,34 @@ namespace CMS.Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Post model)
+        public IActionResult Edit(Post model, IFormFile? uploadImage)
         {
             // SỬA LỖI TẠI ĐÂY: Ép buộc bỏ qua việc kiểm tra trường liên kết 'Category' bị null
             ModelState.Remove("Category");
 
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + uploadImage.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        uploadImage.CopyTo(fileStream);
+                    }
+                    model.ImageUrl = "/uploads/" + uniqueFileName;
+                }
+                else
+                {
+                    var existingPost = _context.Posts.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
+                    if (existingPost != null && string.IsNullOrEmpty(model.ImageUrl))
+                    {
+                        model.ImageUrl = existingPost.ImageUrl;
+                    }
+                }
+
                 _context.Posts.Update(model);
                 _context.SaveChanges();
                 return RedirectToAction("Index");

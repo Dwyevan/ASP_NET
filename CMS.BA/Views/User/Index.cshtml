@@ -1,163 +1,71 @@
-﻿@model IEnumerable<Cms.data.Entities.User>
+@model IEnumerable<Cms.data.Entities.User>
+@{
+    Layout = "_LayoutAdmin";
+}
 
 <div class="container py-4">
-
-    <div class="row mb-4">
-
-        <div class="col-md-6">
-
-            <h2 class="fw-bold text-primary">
-
-                QUẢN LÝ USER
-
-            </h2>
-
-        </div>
-
-        <div class="col-md-6 text-end">
-
-            <a asp-action="Create"
-               class="btn btn-success">
-
-                + Thêm thành viên mới
-
+    <div class="card shadow-sm border-0 rounded">
+        <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold text-dark mb-0">QUẢN LÝ TÀI KHOẢN</h5>
+            <a asp-action="Create" class="btn btn-success btn-sm">
+                <i class="bi bi-person-plus"></i> Thêm thành viên mới
             </a>
-
         </div>
-
-    </div>
-
-    <div class="card shadow">
-
         <div class="card-body">
-
-            <table class="table table-hover align-middle text-center">
-
+            <table class="table table-hover table-bordered align-middle text-center">
                 <thead class="table-dark">
-
                     <tr>
-
-                        <th style="width:70px">
-
-                            ID
-
-                        </th>
-
-                        <th>
-
-                            Username
-
-                        </th>
-
-                        <th>
-
-                            Full Name
-
-                        </th>
-
-                        <th style="width:140px">
-
-                            Role
-
-                        </th>
-
-                        <th style="width:220px">
-
-                            Thao tác
-
-                        </th>
-
+                        <th style="width:70px">ID</th>
+                        <th class="text-start">Username</th>
+                        <th>Mật khẩu</th>
+                        <th class="text-start">Full Name</th>
+                        <th style="width:140px">Role</th>
+                        <th style="width:150px">Thao tác</th>
                     </tr>
-
                 </thead>
-
                 <tbody>
-
                     @if (Model.Any())
                     {
-                        @foreach (var item in Model)
+                        foreach (var item in Model)
                         {
-
                             <tr>
-
+                                <td>@item.Id</td>
+                                <td class="fw-semibold text-start">@item.Username</td>
                                 <td>
-
-                                    @item.Id
-
+                                    <span class="text-muted" style="letter-spacing: 2px;">••••••••</span>
                                 </td>
-
-                                <td class="fw-semibold">
-
-                                    @item.Username
-
-                                </td>
-
+                                <td class="text-start">@item.FullName</td>
                                 <td>
-
-                                    @item.FullName
-
+                                    @if (item.Role == "Admin")
+                                    {
+                                        <span class="badge bg-danger">@item.Role</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info text-dark">@item.Role</span>
+                                    }
                                 </td>
-
                                 <td>
-
-                                    <span class="badge bg-primary">
-
-                                        @item.Role
-
-                                    </span>
-
-                                </td>
-
-                                <td>
-
                                     <div class="d-flex justify-content-center gap-2">
-
-                                        <a asp-action="Edit"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-warning btn-sm">
-
-                                            Sửa
-
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i> Sửa
                                         </a>
-
-                                        <a asp-action="Delete"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-danger btn-sm"
-                                           onclick="return confirm('Bạn có chắc muốn xóa User này?')">
-
-                                            Xóa
-
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa User này?')">
+                                            <i class="bi bi-trash"></i> Xóa
                                         </a>
-
                                     </div>
-
                                 </td>
-
                             </tr>
-
                         }
                     }
                     else
                     {
-
                         <tr>
-
-                            <td colspan="5">
-
-                                Không có dữ liệu User
-
-                            </td>
-
+                            <td colspan="6" class="text-muted py-3">Không có dữ liệu User</td>
                         </tr>
-
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
-
 </div>

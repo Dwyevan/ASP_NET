@@ -1,5 +1,4 @@
 @model Cms.data.Entities.Category
-
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Sửa Danh mục";
@@ -8,39 +7,27 @@
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow-sm rounded-3 border-0">
-                <div class="card-header bg-white p-3 border-bottom-0">
-                    <h4 class="fw-bold mb-0 text-warning">
-                        <i class="bi bi-pencil-square me-2"></i>SỬA DANH MỤC
-                    </h4>
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white p-3 border-bottom">
+                    <h5 class="fw-bold text-dark mb-0">SỬA DANH MỤC</h5>
                 </div>
-                
-                <div class="card-body p-4 bg-light">
+                <div class="card-body p-4">
                     <form asp-action="Edit" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                        
-                        <!-- Giữ lại ID ẩn để Update đúng đối tượng -->
                         <input type="hidden" asp-for="Id" />
-                        
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
+                            <label asp-for="Name" class="form-label fw-bold text-dark">Tên danh mục <span class="text-danger">*</span></label>
                             <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục..." required />
                             <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
-
-                        <div class="mb-4">
-                            <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold text-dark">Mô tả</label>
                             <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả ngắn gọn..."></textarea>
                             <span asp-validation-for="Description" class="text-danger small"></span>
                         </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">
-                                <i class="bi bi-arrow-left"></i> Quay lại
-                            </a>
-                            <button type="submit" class="btn btn-warning px-4 shadow-sm text-dark">
-                                <i class="bi bi-save"></i> Cập nhật
-                            </button>
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Cập nhật</button>
                         </div>
                     </form>
                 </div>

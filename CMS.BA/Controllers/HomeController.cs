@@ -3,6 +3,7 @@ using CMS.BA.Models;
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data; // BẮT BUỘC: Thêm để gọi được ApplicationDbContext
 using System.Linq; // BẮT BUỘC: Thêm để dùng hàm Count() và Sum()
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.BA.Controllers
 {
@@ -38,6 +39,9 @@ namespace CMS.BA.Controllers
             ViewBag.TotalRevenue = _context.Orders.Any()
                 ? _context.Orders.Sum(o => o.TotalAmount)
                 : 0;
+
+            // 5. Lấy 5 đơn hàng mới nhất
+            ViewBag.RecentOrders = _context.Orders.Include(o => o.Customer).OrderByDescending(o => o.OrderDate).Take(5).ToList();
 
             return View();
         }

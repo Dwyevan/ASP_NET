@@ -1,60 +1,71 @@
-﻿@model Cms.data.Entities.Product
-
+@model Cms.data.Entities.Product
 @{
     Layout = "_LayoutAdmin";
 }
 
-<div class="container mt-2">
-    <h2 class="fw-bold text-warning mb-4">CẬP NHẬT THÔNG TIN SẢN PHẨM</h2>
-
-    <div class="card shadow">
-        <div class="card-body">
-            <form asp-action="Edit" method="post">
-                <input type="hidden" asp-for="Id" />
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Tên sản phẩm</label>
-                    <input asp-for="Name" class="form-control" />
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white p-3 border-bottom">
+                    <h5 class="fw-bold text-dark mb-0">CẬP NHẬT SẢN PHẨM</h5>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Giá bán (Price)</label>
-                    <input asp-for="Price" type="number" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Số lượng tồn kho</label>
-                    <input asp-for="StockQuantity" type="number" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Danh mục sản phẩm</label>
-                    <select asp-for="CategoryProductId" class="form-select">
-                        @if (ViewBag.CategoriesProducts != null)
-                        {
-                            foreach (var c in ViewBag.CategoriesProducts)
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold text-dark">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm..." />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Price" class="form-label fw-bold text-dark">Giá bán (Price)</label>
+                                <input asp-for="Price" type="number" class="form-control" placeholder="Nhập giá bán..." />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StockQuantity" class="form-label fw-bold text-dark">Số lượng tồn kho</label>
+                                <input asp-for="StockQuantity" type="number" class="form-control" placeholder="Nhập số lượng..." />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CategoryProductId" class="form-label fw-bold text-dark">Danh mục sản phẩm</label>
+                            <select asp-for="CategoryProductId" class="form-select">
+                                @if (ViewBag.CategoriesProducts != null)
+                                {
+                                    foreach (var c in ViewBag.CategoriesProducts)
+                                    {
+                                        <option value="@c.Id">@c.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold text-dark">Mô tả sản phẩm</label>
+                            <textarea asp-for="Description" rows="3" class="form-control" placeholder="Nhập mô tả ngắn..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label fw-bold text-dark">Ảnh URL</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="Ví dụ: /img/xiaomi.jpg" />
+                            @if (!string.IsNullOrEmpty(Model?.ImageUrl))
                             {
-                                <option value="@c.Id">@c.Name</option>
+                                <div class="mt-2">
+                                    <img src="@Model.ImageUrl" alt="Current Image" style="max-height: 100px; border: 1px solid #ccc; border-radius: 5px;" />
+                                </div>
                             }
-                        }
-                    </select>
-                </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark">Hoặc tải ảnh lên từ máy tính</label>
+                            <input type="file" name="uploadImage" class="form-control" accept="image/*" />
+                        </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Mô tả sản phẩm</label>
-                    <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Cập nhật</button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Ảnh URL</label>
-                    <input asp-for="ImageUrl" class="form-control" />
-                </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-warning fw-bold text-dark px-4">Cập nhật sản phẩm</button>
-                    <a asp-action="Index" class="btn btn-secondary px-4">Quay lại</a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

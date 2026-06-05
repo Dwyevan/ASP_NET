@@ -2,6 +2,8 @@ using CMS.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
+using Cms.data.Entities;
 
 namespace CMS.BA.Controllers
 {
@@ -69,6 +71,39 @@ namespace CMS.BA.Controllers
             }
 
             return Ok(post);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Post model)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest(new { message = "ID không khớp" });
+            }
+
+            var exists = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            if (exists == null)
+            {
+                return NotFound(new { message = "Không tìm thấy bản ghi" });
+            }
+
+            _context.Posts.Update(model);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Cập nhật thành công", data = model });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existing = await _context.Posts.FindAsync(id);
+            if (existing == null)
+            {
+                return NotFound(new { message = "Không tìm thấy bản ghi" });
+            }
+
+            _context.Posts.Remove(existing);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Xóa thành công" });
         }
     }
 }
