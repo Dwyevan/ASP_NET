@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../components/CartProvider';
 import { formatCurrency } from '../utils/formatters';
 import orderService from '../services/orderService';
 
 const Checkout = () => {
-    const { cartItems, getCartTotal, clearCart } = useCart();
+    const { cartItems, getCartTotal, clearCart, addToast } = useCart();
     const navigate = useNavigate();
-    
+
     const [formData, setFormData] = useState({
         fullName: '',
         phone: '',
@@ -16,7 +16,7 @@ const Checkout = () => {
         notes: '',
         paymentMethod: 'cod'
     });
-    
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
 
@@ -42,133 +42,235 @@ const Checkout = () => {
             await orderService.createOrder(orderPayload);
             clearCart();
             setOrderSuccess(true);
-            alert("Đặt hàng thành công!");
+            addToast('Đặt hàng thành công!', 'Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.', 'success');
         } catch (error) {
             console.error("Lỗi đặt hàng:", error);
-            alert("Có lỗi xảy ra khi xử lý đơn hàng. Vui lòng thử lại.");
+            addToast('Có lỗi xảy ra', 'Vui lòng thử lại hoặc liên hệ hotline 1900 8888.', 'error');
         } finally {
             setIsSubmitting(false);
         }
     };
 
+    // Success Page
     if (orderSuccess) {
         return (
-            <div className="container py-5 text-center bg-light-wine" style={{ minHeight: '60vh' }}>
-                <div className="card bg-white border-0 p-5 mx-auto shadow-sm rounded" style={{ maxWidth: '600px' }}>
-                    <i className="fa-solid fa-circle-check fa-5x text-success mb-4"></i>
-                    <h2 className="text-dark font-weight-bold mb-3 font-serif">ĐẶT HÀNG THÀNH CÔNG</h2>
-                    <p className="text-muted mb-4 text-left" style={{lineHeight: '1.8'}}>
-                        Cảm ơn quý khách <strong className="text-dark">{formData.fullName}</strong> đã tin tưởng Royal Wine Estate. 
-                        Đơn hàng của quý khách đang được xử lý và sẽ được bộ phận chăm sóc khách hàng liên hệ xác nhận trong thời gian sớm nhất.
-                    </p>
-                    <button className="btn btn-outline-gold rounded-pill px-4" onClick={() => navigate('/')}>Trở về Trang chủ</button>
+            <div>
+                <div className="page-banner">
+                    <div className="container">
+                        <h1 className="font-serif">Đặt Hàng Thành Công</h1>
+                    </div>
+                </div>
+                <div className="container" style={{ padding: '60px 15px' }}>
+                    <div style={{ maxWidth: '550px', margin: '0 auto', background: '#fff', borderRadius: 'var(--radius-lg)', padding: '50px 40px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
+                        <div className="success-icon">
+                            <i className="fa-solid fa-check"></i>
+                        </div>
+                        <h2 className="font-serif mb-3" style={{ fontSize: '1.8rem' }}>Cảm Ơn Quý Khách!</h2>
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '10px' }}>
+                            Đơn hàng của quý khách <strong style={{ color: 'var(--text-primary)' }}>{formData.fullName}</strong> đã được tiếp nhận thành công.
+                        </p>
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '30px' }}>
+                            Bộ phận chăm sóc khách hàng sẽ liên hệ xác nhận trong thời gian sớm nhất. Nếu cần hỗ trợ, vui lòng gọi <strong style={{ color: 'var(--wine-burgundy)' }}>1900 8888</strong>.
+                        </p>
+                        <div className="d-flex justify-content-center" style={{ gap: '12px', flexWrap: 'wrap' }}>
+                            <Link to="/" className="btn btn-outline-gold">
+                                <i className="fa-solid fa-house mr-2"></i> Trang chủ
+                            </Link>
+                            <Link to="/shop" className="btn btn-gold">
+                                <i className="fa-solid fa-store mr-2"></i> Tiếp tục mua sắm
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="container py-5 bg-light-wine">
-            <h2 className="text-dark font-weight-bold font-serif text-uppercase mb-4 border-bottom pb-3">
-                <i className="fa-solid fa-credit-card mr-2 text-gold"></i> Thanh Toán (Checkout)
-            </h2>
+        <div>
+            <div className="page-banner">
+                <div className="container">
+                    <h1 className="font-serif">Thanh Toán</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><Link to="/">Trang chủ</Link></li>
+                            <li className="breadcrumb-item"><Link to="/cart">Giỏ hàng</Link></li>
+                            <li className="breadcrumb-item active" aria-current="page">Thanh toán</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
 
-            <div className="row">
-                <div className="col-lg-7 mb-4">
-                    <div className="card bg-white border-0 shadow-sm mb-4 rounded">
-                        <div className="card-header bg-white text-dark font-weight-bold border-bottom py-3">
-                            <span className="badge bg-gold text-white mr-2">1</span> THÔNG TIN GIAO HÀNG
-                        </div>
-                        <div className="card-body p-4">
-                            <form id="checkoutForm" onSubmit={handleSubmit}>
-                                <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <label className="text-muted small font-weight-bold">Họ và tên *</label>
-                                        <input type="text" className="form-control bg-light border-0 py-2" name="fullName" required onChange={handleInputChange} />
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="text-muted small font-weight-bold">Số điện thoại *</label>
-                                        <input type="text" className="form-control bg-light border-0 py-2" name="phone" required onChange={handleInputChange} />
-                                    </div>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="text-muted small font-weight-bold">Email</label>
-                                    <input type="email" className="form-control bg-light border-0 py-2" name="email" onChange={handleInputChange} />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="text-muted small font-weight-bold">Địa chỉ giao hàng chi tiết *</label>
-                                    <textarea className="form-control bg-light border-0" rows="2" name="address" required onChange={handleInputChange}></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="text-muted small font-weight-bold">Ghi chú đơn hàng (Nếu có)</label>
-                                    <textarea className="form-control bg-light border-0" rows="2" name="notes" placeholder="VD: Giao hàng giờ hành chính, cần gói quà..." onChange={handleInputChange}></textarea>
-                                </div>
-                            </form>
-                        </div>
+            <div className="container" style={{ padding: '50px 15px' }}>
+                {/* Step Indicator */}
+                <div className="step-indicator">
+                    <div className="step-item completed">
+                        <div className="step-number"><i className="fa-solid fa-check" style={{ fontSize: '0.75rem' }}></i></div>
+                        <span>Giỏ hàng</span>
                     </div>
-
-                    <div className="card bg-white border-0 shadow-sm rounded">
-                        <div className="card-header bg-white text-dark font-weight-bold border-bottom py-3">
-                            <span className="badge bg-gold text-white mr-2">2</span> PHƯƠNG THỨC THANH TOÁN
-                        </div>
-                        <div className="card-body p-4">
-                            <div className="form-check mb-3 p-3 bg-light rounded border border-light cursor-pointer">
-                                <input className="form-check-input ml-1 mt-2" type="radio" name="paymentMethod" id="cod" value="cod" checked={formData.paymentMethod === 'cod'} onChange={handleInputChange} />
-                                <label className="form-check-label ml-4 text-dark font-weight-bold d-block" htmlFor="cod" style={{cursor: 'pointer'}}>
-                                    <i className="fa-solid fa-money-bill-wave text-success mr-2"></i> Thanh toán khi nhận hàng (COD)
-                                    <small className="d-block text-muted font-weight-normal mt-1">Giao hàng và thu tiền tận nơi.</small>
-                                </label>
-                            </div>
-                            <div className="form-check mb-3 p-3 bg-light rounded border border-light cursor-pointer">
-                                <input className="form-check-input ml-1 mt-2" type="radio" name="paymentMethod" id="banking" value="banking" checked={formData.paymentMethod === 'banking'} onChange={handleInputChange} />
-                                <label className="form-check-label ml-4 text-dark font-weight-bold d-block" htmlFor="banking" style={{cursor: 'pointer'}}>
-                                    <i className="fa-solid fa-building-columns text-info mr-2"></i> Chuyển khoản ngân hàng (QR Code)
-                                    <small className="d-block text-muted font-weight-normal mt-1">Quét mã QR để thanh toán nhanh chóng và bảo mật.</small>
-                                </label>
-                                {formData.paymentMethod === 'banking' && (
-                                    <div className="mt-3 p-4 bg-white rounded border border-info text-center shadow-sm">
-                                        <img src="https://placehold.co/150x150?text=QR+Code" alt="QR" className="mb-3" />
-                                        <p className="text-dark font-weight-bold mb-1">Chủ TK: ROYAL WINE ESTATE</p>
-                                        <p className="text-muted small mb-0">Vui lòng quét mã trên ứng dụng ngân hàng.</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                    <div className="step-connector completed"></div>
+                    <div className="step-item active">
+                        <div className="step-number">2</div>
+                        <span>Thanh toán</span>
+                    </div>
+                    <div className="step-connector"></div>
+                    <div className="step-item">
+                        <div className="step-number">3</div>
+                        <span>Hoàn tất</span>
                     </div>
                 </div>
 
-                <div className="col-lg-5">
-                    <div className="card bg-white border-0 shadow-sm rounded sticky-top" style={{top: '100px'}}>
-                        <div className="card-header bg-white text-dark font-weight-bold border-bottom py-3">
-                            <span className="badge bg-gold text-white mr-2">3</span> ĐƠN HÀNG CỦA BẠN
-                        </div>
-                        <div className="card-body p-4">
-                            <ul className="list-group list-group-flush mb-4">
-                                {cartItems.map(item => (
-                                    <li key={item.id} className="list-group-item bg-transparent text-dark px-0 d-flex justify-content-between align-items-center border-bottom pb-2 pt-2">
-                                        <div className="d-flex align-items-center">
-                                            <span className="badge bg-light border text-dark mr-2">{item.quantity}</span>
-                                            <span className="small text-truncate font-weight-bold" style={{maxWidth: '150px'}}>{item.name}</span>
-                                        </div>
-                                        <span className="text-burgundy small font-weight-bold">{formatCurrency(item.price * item.quantity)}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                            
-                            <div className="d-flex justify-content-between mb-4">
-                                <span className="font-weight-bold text-dark fs-5">TỔNG CỘNG:</span>
-                                <span className="font-weight-bold text-burgundy fs-4">{formatCurrency(getCartTotal())}</span>
+                <div className="row">
+                    {/* Form */}
+                    <div className="col-lg-7 mb-4">
+                        {/* Shipping Info */}
+                        <div className="checkout-card mb-4">
+                            <div className="checkout-card-header">
+                                <span style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--wine-burgundy)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700 }}>1</span>
+                                THÔNG TIN GIAO HÀNG
                             </div>
+                            <div className="checkout-card-body">
+                                <form id="checkoutForm" onSubmit={handleSubmit}>
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3">
+                                            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Họ và tên *</label>
+                                            <input type="text" className="form-wine w-100" name="fullName" required value={formData.fullName} onChange={handleInputChange} placeholder="Nguyễn Văn A" />
+                                        </div>
+                                        <div className="col-md-6 mb-3">
+                                            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Số điện thoại *</label>
+                                            <input type="tel" className="form-wine w-100" name="phone" required value={formData.phone} onChange={handleInputChange} placeholder="0901 234 567" />
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Email</label>
+                                        <input type="email" className="form-wine w-100" name="email" value={formData.email} onChange={handleInputChange} placeholder="email@example.com" />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Địa chỉ giao hàng *</label>
+                                        <textarea className="form-wine w-100" rows="2" name="address" required value={formData.address} onChange={handleInputChange} placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"></textarea>
+                                    </div>
+                                    <div className="mb-0">
+                                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Ghi chú đơn hàng</label>
+                                        <textarea className="form-wine w-100" rows="2" name="notes" value={formData.notes} onChange={handleInputChange} placeholder="VD: Giao giờ hành chính, gói quà..."></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
-                            <button 
-                                form="checkoutForm" 
-                                type="submit" 
-                                className="btn btn-gold btn-lg w-100 font-weight-bold text-uppercase shadow-sm rounded-pill"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? <span className="spinner-border spinner-border-sm mr-2"></span> : <i className="fa-solid fa-shield-check mr-2"></i>}
-                                Hoàn Tất Đặt Hàng
-                            </button>
+                        {/* Payment Method */}
+                        <div className="checkout-card">
+                            <div className="checkout-card-header">
+                                <span style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--wine-burgundy)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700 }}>2</span>
+                                PHƯƠNG THỨC THANH TOÁN
+                            </div>
+                            <div className="checkout-card-body">
+                                <div
+                                    className={`payment-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}
+                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'cod' }))}
+                                >
+                                    <div className="d-flex align-items-center" style={{ gap: '12px' }}>
+                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'cod'} onChange={() => { }} style={{ accentColor: 'var(--wine-gold)' }} />
+                                        <div>
+                                            <div style={{ fontWeight: 600 }}>
+                                                <i className="fa-solid fa-money-bill-wave mr-2" style={{ color: '#27AE60' }}></i>
+                                                Thanh toán khi nhận hàng (COD)
+                                            </div>
+                                            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>Giao hàng và thu tiền tận nơi</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    className={`payment-option ${formData.paymentMethod === 'banking' ? 'selected' : ''}`}
+                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'banking' }))}
+                                >
+                                    <div className="d-flex align-items-center" style={{ gap: '12px' }}>
+                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'banking'} onChange={() => { }} style={{ accentColor: 'var(--wine-gold)' }} />
+                                        <div>
+                                            <div style={{ fontWeight: 600 }}>
+                                                <i className="fa-solid fa-building-columns mr-2" style={{ color: '#3498DB' }}></i>
+                                                Chuyển khoản ngân hàng
+                                            </div>
+                                            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>Quét mã QR để thanh toán nhanh chóng</div>
+                                        </div>
+                                    </div>
+                                    {formData.paymentMethod === 'banking' && (
+                                        <div className="text-center mt-3 p-3" style={{ background: 'var(--surface-light)', borderRadius: 'var(--radius-md)' }}>
+                                            <img src="https://placehold.co/150x150?text=QR+Code" alt="QR" style={{ borderRadius: '8px' }} className="mb-2" />
+                                            <p style={{ fontWeight: 600, marginBottom: '2px', fontSize: '0.9rem' }}>ROYAL WINE ESTATE</p>
+                                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 0 }}>Quét mã trên ứng dụng ngân hàng</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Order Review */}
+                    <div className="col-lg-5">
+                        <div className="order-summary sticky-top" style={{ top: '100px', background: '#fff' }}>
+                            <div className="order-summary-header">
+                                <h5 className="mb-0 font-serif" style={{ fontSize: '1.1rem' }}>
+                                    <i className="fa-solid fa-clipboard-list mr-2" style={{ color: 'var(--wine-gold)' }}></i>
+                                    Đơn Hàng Của Bạn
+                                </h5>
+                            </div>
+                            <div className="order-summary-body">
+                                {/* Items */}
+                                <div style={{ marginBottom: '20px' }}>
+                                    {cartItems.map(item => (
+                                        <div key={item.id} className="d-flex align-items-center mb-3" style={{ gap: '12px', paddingBottom: '12px', borderBottom: '1px solid var(--border-light)' }}>
+                                            <div style={{ position: 'relative', flexShrink: 0 }}>
+                                                <div style={{ width: '55px', height: '65px', background: 'var(--surface-light)', borderRadius: '6px', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-light)' }}>
+                                                    <img src={item.imageUrl || 'https://placehold.co/50x60'} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                                </div>
+                                                <span style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--wine-burgundy)', color: '#fff', width: '20px', height: '20px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 700 }}>
+                                                    {item.quantity}
+                                                </span>
+                                            </div>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <div style={{ fontWeight: 600, fontSize: '0.88rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
+                                                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{item.quantity} × {formatCurrency(item.price)}</div>
+                                            </div>
+                                            <div style={{ fontWeight: 700, color: 'var(--wine-burgundy)', fontSize: '0.9rem', fontFamily: "'Playfair Display', serif", flexShrink: 0 }}>
+                                                {formatCurrency(item.price * item.quantity)}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="summary-row">
+                                    <span style={{ color: 'var(--text-secondary)' }}>Tạm tính:</span>
+                                    <span style={{ fontWeight: 600 }}>{formatCurrency(getCartTotal())}</span>
+                                </div>
+                                <div className="summary-row">
+                                    <span style={{ color: 'var(--text-secondary)' }}>Phí giao hàng:</span>
+                                    <span style={{ fontWeight: 600, color: '#27AE60' }}>Miễn phí</span>
+                                </div>
+                                <div className="summary-row summary-total">
+                                    <span style={{ fontWeight: 700, fontSize: '1.05rem' }}>TỔNG CỘNG:</span>
+                                    <span style={{ fontWeight: 700, fontSize: '1.4rem', color: 'var(--wine-burgundy)', fontFamily: "'Playfair Display', serif" }}>
+                                        {formatCurrency(getCartTotal())}
+                                    </span>
+                                </div>
+
+                                <button
+                                    form="checkoutForm"
+                                    type="submit"
+                                    className="btn btn-gold btn-lg w-100 mt-4"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <><span className="spinner-border spinner-border-sm mr-2"></span> Đang xử lý...</>
+                                    ) : (
+                                        <><i className="fa-solid fa-shield-check mr-2"></i> Hoàn Tất Đặt Hàng</>
+                                    )}
+                                </button>
+
+                                <p className="text-center mt-3" style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                                    <i className="fa-solid fa-lock mr-1"></i> Thông tin của bạn được bảo mật tuyệt đối
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

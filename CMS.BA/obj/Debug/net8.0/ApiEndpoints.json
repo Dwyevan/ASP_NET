@@ -90,6 +90,22 @@
   },
   {
     "ContainingType": "CMS.BA.Controllers.CategoriesProductsAPIController",
+    "Method": "Create",
+    "RelativePath": "api/CategoriesProducts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Cms.data.Entities.CategoryProduct",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMS.BA.Controllers.CategoriesProductsAPIController",
     "Method": "Update",
     "RelativePath": "api/CategoriesProducts/{id}",
     "HttpMethod": "PUT",
@@ -270,6 +286,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMS.BA.Controllers.ProductsAPIController",
+    "Method": "Create",
+    "RelativePath": "api/Products",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Cms.data.Entities.Product",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
