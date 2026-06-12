@@ -20,11 +20,23 @@
 
         .sidebar .nav-link {
             color: #adbcca;
+            font-size: 0.95rem;
             font-weight: 500;
-            padding: 12px 20px;
+            padding: 10px 20px;
             border-radius: 8px;
             margin: 4px 12px;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .menu-heading {
+            color: #6c757d;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin: 15px 20px 5px;
         }
 
         .sidebar .nav-link:hover {
@@ -52,52 +64,61 @@
                 <div class="p-3 bg-dark text-center border-bottom border-secondary">
                     <h4 class="fw-bold text-light mb-0 py-2"><i class="bi bi-shield-lock"></i> ADMIN PANEL</h4>
                 </div>
-                <ul class="nav flex-column mt-3">
+                @{
+                    var role = User?.Claims?.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value ?? "User";
+                    var isAdmin = role == "Admin";
+                }
+
+                <ul class="nav flex-column mt-2 mb-4">
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Home" asp-action="Index">
-                            <i class="bi bi-speedometer me-2"></i> Bảng điều khiển
+                            <i class="bi bi-speedometer2 me-3 fs-5"></i> Bảng điều khiển
                         </a>
                     </li>
+
+                    <li class="menu-heading">Kinh Doanh</li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Post" asp-action="Index">
-                            <i class="bi bi-file-earmark-text-fill me-2"></i> Quản lý Bài viết
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Category" asp-action="Index">
-                            <i class="bi bi-folder-fill me-2"></i> Danh mục Bài viết
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="User" asp-action="Index">
-                            <i class="bi bi-person-badge-fill me-2"></i> Quản lý Thành viên
+                        <a class="nav-link" asp-controller="Order" asp-action="Index">
+                            <i class="bi bi-cart-check-fill me-3 fs-5 text-warning"></i> Quản lý Đơn hàng
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Product" asp-action="Index">
-                            <i class="bi bi-box-seam-fill me-2"></i> Quản lý Sản phẩm
+                            <i class="bi bi-box-seam-fill me-3 fs-5 text-info"></i> Quản lý Sản phẩm
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="CategoriesProduct" asp-action="Index">
-                            <i class="bi bi-tags-fill me-2"></i> Danh mục Sản phẩm
+                            <i class="bi bi-tags-fill me-3 fs-5"></i> Danh mục Sản phẩm
+                        </a>
+                    </li>
+
+                    <li class="menu-heading">Nội Dung</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Post" asp-action="Index">
+                            <i class="bi bi-file-earmark-text-fill me-3 fs-5 text-success"></i> Quản lý Bài viết
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Customer" asp-action="Index">
-                            <i class="bi bi-people-fill me-2"></i> Quản lý Khách hàng
+                        <a class="nav-link" asp-controller="Category" asp-action="Index">
+                            <i class="bi bi-folder-fill me-3 fs-5"></i> Danh mục Bài viết
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Order" asp-action="Index">
-                            <i class="bi bi-cart-fill me-2"></i> Quản lý Đơn hàng
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="OrderDetail" asp-action="Index">
-                            <i class="bi bi-receipt me-2"></i> Chi tiết Đơn hàng
-                        </a>
-                    </li>
+
+                    @if (isAdmin)
+                    {
+                        <li class="menu-heading">Hệ Thống & Khách Hàng</li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="User" asp-action="Index">
+                                <i class="bi bi-person-badge-fill me-3 fs-5 text-danger"></i> Quản lý Thành viên
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Customer" asp-action="Index">
+                                <i class="bi bi-people-fill me-3 fs-5 text-primary"></i> Quản lý Khách hàng
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
 
@@ -110,13 +131,12 @@
                     </span>
                     
                     <div class="d-flex align-items-center">
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User?.Identity?.IsAuthenticated == true)
                         {
-                            var fullName = User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value ?? User.Identity.Name;
-                            var role = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value ?? "Thành viên";
+                            var fullName = User?.Claims?.FirstOrDefault(c => c.Type == "FullName")?.Value ?? User?.Identity?.Name ?? "Thành viên";
                             
                             <span class="me-3 fw-semibold text-dark">
-                                Chào, @fullName (@role)
+                                Chào, @fullName <span class="badge @(role == "Admin" ? "bg-danger" : "bg-primary") ms-1">@role</span>
                             </span>
                             <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
                                 <i class="bi bi-box-arrow-right"></i> Đăng xuất

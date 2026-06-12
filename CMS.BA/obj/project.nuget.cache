@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "WaB6+JopTwg=",
+  "dgSpecHash": "vYW+iCJKsls=",
   "success": true,
   "projectFilePath": "C:\\Users\\LIGION\\Downloads\\DuyCMS_Solution\\DuyCMS_Solution\\CMS.BA\\CMS.BA.csproj",
   "expectedPackageFiles": [
@@ -115,7 +115,7 @@
     "C:\\Users\\LIGION\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration.utils\\8.0.23\\microsoft.visualstudio.web.codegeneration.utils.8.0.23.nupkg.sha512",
     "C:\\Users\\LIGION\\.nuget\\packages\\microsoft.visualstudio.web.codegenerators.mvc\\8.0.23\\microsoft.visualstudio.web.codegenerators.mvc.8.0.23.nupkg.sha512",
     "C:\\Users\\LIGION\\.nuget\\packages\\mono.texttemplating\\2.3.1\\mono.texttemplating.2.3.1.nupkg.sha512",
-    "C:\\Users\\LIGION\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\LIGION\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
     "C:\\Users\\LIGION\\.nuget\\packages\\nuget.common\\6.11.0\\nuget.common.6.11.0.nupkg.sha512",
     "C:\\Users\\LIGION\\.nuget\\packages\\nuget.configuration\\6.11.0\\nuget.configuration.6.11.0.nupkg.sha512",
     "C:\\Users\\LIGION\\.nuget\\packages\\nuget.dependencyresolver.core\\6.11.0\\nuget.dependencyresolver.core.6.11.0.nupkg.sha512",

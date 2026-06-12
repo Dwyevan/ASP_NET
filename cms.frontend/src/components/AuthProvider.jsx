@@ -1,0 +1,73 @@
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import authService from '../services/authService';
+
+const AuthContext = createContext();
+
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
+
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Khôi phục user từ localStorage khi reload trang
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+        setLoading(false);
+    }, []);
+
+    const login = async (email, password) => {
+        try {
+            const response = await authService.login(email, password);
+            
+            // Nếu là Admin
+            if (response.isAdmin) {
+                return { success: true, message: response.message, isAdmin: true };
+            }
+
+            // Nếu là Khách hàng bình thường
+            const userData = response.customer;
+            setUser(userData);
+            localStorage.setItem('user', JSON.stringify(userData));
+            return { success: true, message: response.message, isAdmin: false };
+        } catch (error) {
+            console.error("Login error:", error);
+            const errorMsg = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+            return { success: false, message: errorMsg };
+        }
+    };
+
+    const register = async (data) => {
+        try {
+            const response = await authService.register(data);
+            return { success: true, message: response.message };
+        } catch (error) {
+            console.error("Register error:", error);
+            const errorMsg = error.response?.data?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.';
+            return { success: false, message: errorMsg };
+        }
+    };
+
+    const logout = () => {
+        setUser(null);
+        localStorage.removeItem('user');
+    };
+
+    const value = {
+        user,
+        login,
+        register,
+        logout,
+        isAuthenticated: !!user
+    };
+
+    return (
+        <AuthContext.Provider value={value}>
+            {!loading && children}
+        </AuthContext.Provider>
+    );
+};

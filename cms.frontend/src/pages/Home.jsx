@@ -7,14 +7,22 @@ import ProductCard, { ProductCardSkeleton } from '../components/ProductCard';
 import { formatDate } from '../utils/formatters';
 
 const wineImages = [
-    'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400',
-    'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400',
-    'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=400',
-    'https://images.unsplash.com/photo-1566995541428-f4e21d4f5a93?w=400',
+    'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600',
+    'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=600',
+    'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=600',
+    'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=600', 
+    'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600',
+    'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=600'
 ];
 
 const Home = () => {
-    const [featuredWines, setFeaturedWines] = useState([]);
+    // Phân loại danh sách sản phẩm theo tâm lý mua hàng
+    const [bestSellers, setBestSellers] = useState([]);
+    const [hotTrends, setHotTrends] = useState([]);
+    const [summerWines, setSummerWines] = useState([]);
+    const [sweetWines, setSweetWines] = useState([]);
+    const [boldWines, setBoldWines] = useState([]);
+
     const [categories, setCategories] = useState([]);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,7 +36,38 @@ const Home = () => {
                     categoryProductService.getAllCategoryProducts(),
                     blogService.getAllPosts()
                 ]);
-                if (productsData.status === 'fulfilled') setFeaturedWines(productsData.value.slice(0, 8));
+
+                if (productsData.status === 'fulfilled') {
+                    const allProducts = productsData.value;
+                    
+                    // 1. Best Sellers (Sản phẩm bán chạy - Giả lập 4 sản phẩm đầu)
+                    setBestSellers(allProducts.slice(0, 4));
+
+                    // 2. Hot Trends (Xu hướng - 4 sản phẩm tiếp theo)
+                    setHotTrends(allProducts.slice(4, 8).length > 0 ? allProducts.slice(4, 8) : allProducts.slice(0, 4));
+
+                    // 3. Mùa hè sảng khoái (Vang trắng, vang sủi)
+                    const summer = allProducts.filter(p => {
+                        const cat = (p.categoryProduct?.name || '').toLowerCase();
+                        return cat.includes('trắng') || cat.includes('sủi') || cat.includes('champagne');
+                    });
+                    setSummerWines(summer.length > 0 ? summer.slice(0, 4) : allProducts.slice(0, 4));
+
+                    // 4. Khẩu vị Ngọt ngào (Vang ngọt)
+                    const sweet = allProducts.filter(p => {
+                        const cat = (p.categoryProduct?.name || '').toLowerCase();
+                        return cat.includes('ngọt');
+                    });
+                    setSweetWines(sweet.length > 0 ? sweet.slice(0, 4) : allProducts.slice(0, 4));
+
+                    // 5. Khẩu vị Đậm đà (Vang đỏ)
+                    const bold = allProducts.filter(p => {
+                        const cat = (p.categoryProduct?.name || '').toLowerCase();
+                        return cat.includes('đỏ');
+                    });
+                    setBoldWines(bold.length > 0 ? bold.slice(0, 4) : allProducts.slice(0, 4));
+                }
+
                 if (catData.status === 'fulfilled') setCategories(catData.value);
                 if (postsData.status === 'fulfilled') setPosts(postsData.value.slice(0, 3));
             } catch (error) {
@@ -46,6 +85,17 @@ const Home = () => {
         { icon: 'fa-tags', title: 'Giá Tốt Nhất', desc: 'Giá cạnh tranh nhất thị trường, cam kết hoàn tiền chênh lệch' },
         { icon: 'fa-headset', title: 'Tư Vấn 24/7', desc: 'Đội ngũ Sommelier chuyên nghiệp sẵn sàng hỗ trợ bạn' },
     ];
+
+    // Hàm render khung xương (Loading Skeleton)
+    const renderSkeletons = () => (
+        <div className="row">
+            {[...Array(4)].map((_, i) => (
+                <div className="col-lg-3 col-md-4 col-6 mb-4" key={i}>
+                    <ProductCardSkeleton />
+                </div>
+            ))}
+        </div>
+    );
 
     return (
         <div className="home-page">
@@ -65,9 +115,9 @@ const Home = () => {
                         <Link to="/shop" className="btn btn-gold btn-lg px-5">
                             <i className="fa-solid fa-store mr-2"></i> Khám Phá Ngay
                         </Link>
-                        <Link to="/blog" className="btn btn-outline-gold btn-lg px-5" style={{ borderColor: 'rgba(255,255,255,0.5)', color: '#fff' }}>
-                            <i className="fa-solid fa-book-open mr-2"></i> Câu Chuyện Vang
-                        </Link>
+                        <a href="#best-seller" className="btn btn-outline-gold btn-lg px-5" style={{ borderColor: 'rgba(255,255,255,0.5)', color: '#fff' }}>
+                            <i className="fa-solid fa-fire mr-2"></i> Bán Chạy Nhất
+                        </a>
                     </div>
                 </div>
                 {/* Decorative wave */}
@@ -78,108 +128,226 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* ========= CATEGORIES SECTION ========= */}
+            {/* ========= DANH MỤC CƠ BẢN ĐỈNH CAO THẨM MỸ ========= */}
             {categories.length > 0 && (
-                <section style={{ padding: '80px 0' }}>
+                <section style={{ padding: '60px 0 40px', background: 'var(--wine-ivory)' }}>
                     <div className="container">
-                        <div className="section-header">
-                            <h2>Danh Mục Sản Phẩm</h2>
-                            <div className="section-divider"></div>
-                            <p className="subtitle">Khám phá đa dạng các dòng rượu vang ngoại nhập cao cấp</p>
+                        <div className="text-center mb-5">
+                            <h2 className="font-serif" style={{ color: 'var(--wine-burgundy)', fontSize: '2.2rem', marginBottom: '10px' }}>Tinh Hoa Giao Thoa</h2>
+                            <p className="text-muted" style={{ fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>Lựa chọn dòng vang phù hợp nhất với phong cách và cá tính của riêng bạn.</p>
                         </div>
-                        <div className="row">
-                            {categories.map((cat, idx) => (
-                                <div className="col-md-4 col-6 mb-4" key={cat.id}>
-                                    <Link to={`/shop?category=${cat.id}`} className="text-decoration-none">
-                                        <div className="category-card">
-                                            <img src={wineImages[idx % wineImages.length]} alt={cat.name} />
-                                            <div className="category-card-overlay">
-                                                <div>
-                                                    <div className="category-card-title">{cat.name}</div>
-                                                    {cat.description && (
-                                                        <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', marginTop: '5px' }}>{cat.description}</div>
-                                                    )}
+                        <div className="row justify-content-center">
+                            {categories.map((cat, idx) => {
+                                // Gán hình ảnh mẫu dựa trên tên danh mục để tăng tính thẩm mỹ
+                                let bgImage = 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=600'; // Default
+                                const catName = cat.name.toLowerCase();
+                                if (catName.includes('đỏ')) bgImage = 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=600';
+                                else if (catName.includes('trắng')) bgImage = 'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=600';
+                                else if (catName.includes('sủi') || catName.includes('champagne')) bgImage = 'https://images.unsplash.com/photo-1599939571322-792a326e4e59?w=600';
+                                else if (catName.includes('ngọt')) bgImage = 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600';
+
+                                return (
+                                    <div className="col-lg-3 col-md-4 col-6 mb-4" key={cat.id}>
+                                        <Link to={`/shop?category=${cat.id}`} className="text-decoration-none d-block h-100">
+                                            <div className="category-image-card" style={{ 
+                                                position: 'relative', 
+                                                height: '280px', 
+                                                borderRadius: '16px', 
+                                                overflow: 'hidden',
+                                                boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+                                                backgroundImage: `url(${bgImage})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                            }}>
+                                                <div className="category-overlay" style={{
+                                                    position: 'absolute',
+                                                    inset: 0,
+                                                    background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%)',
+                                                    transition: 'all 0.4s ease'
+                                                }}></div>
+                                                <div className="category-content" style={{
+                                                    position: 'absolute',
+                                                    bottom: '0',
+                                                    left: '0',
+                                                    width: '100%',
+                                                    padding: '25px 20px',
+                                                    textAlign: 'center',
+                                                    color: '#fff',
+                                                    zIndex: 2,
+                                                    transition: 'all 0.4s ease'
+                                                }}>
+                                                    <h3 className="font-serif mb-2" style={{ fontSize: '1.4rem', fontWeight: 600, letterSpacing: '1px' }}>{cat.name}</h3>
+                                                    <span className="explore-btn" style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--wine-gold)', opacity: 0, transition: 'all 0.4s ease', transform: 'translateY(10px)', display: 'inline-block' }}>Khám phá <i className="fa-solid fa-arrow-right ms-1"></i></span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                </div>
-                            ))}
+                                        </Link>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </section>
             )}
 
-            {/* ========= FEATURED PRODUCTS ========= */}
-            <section style={{ padding: '80px 0', background: 'var(--wine-cream)' }}>
+            {/* ========= 1. BEST SELLER SECTION ========= */}
+            <section id="best-seller" style={{ padding: '80px 0' }}>
                 <div className="container">
-                    <div className="section-header">
-                        <h2>Bộ Sưu Tập Nổi Bật</h2>
-                        <div className="section-divider"></div>
-                        <p className="subtitle">Những chai rượu vang được yêu thích nhất tại Royal Wine Estate</p>
+                    <div className="d-flex justify-content-between align-items-end mb-4">
+                        <div>
+                            <div style={{ color: 'var(--wine-gold)', fontWeight: 700, fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '10px' }}>
+                                <i className="fa-solid fa-crown mr-2"></i> Khách Hàng Yêu Thích
+                            </div>
+                            <h2 className="font-serif mb-0" style={{ fontSize: '2.4rem' }}>Best Sellers</h2>
+                        </div>
+                        <Link to="/shop" className="btn btn-outline-gold d-none d-md-inline-block">
+                            Xem tất cả <i className="fa-solid fa-arrow-right ml-2"></i>
+                        </Link>
                     </div>
-
-                    {loading ? (
+                    
+                    {loading ? renderSkeletons() : (
                         <div className="row">
-                            {[...Array(4)].map((_, i) => (
-                                <div className="col-lg-3 col-md-4 col-6 mb-4" key={i}>
-                                    <ProductCardSkeleton />
+                            {bestSellers.map((wine, idx) => (
+                                <div className="col-lg-3 col-md-4 col-6 mb-4" key={wine.id}>
+                                    {/* Override badge manually for visual effect */}
+                                    <div style={{position: 'relative', height: '100%'}}>
+                                        {idx === 0 && <span className="product-badge" style={{background: 'var(--wine-burgundy)', zIndex: 10, left: 10, top: 10}}>Top 1</span>}
+                                        <ProductCard product={wine} />
+                                    </div>
                                 </div>
                             ))}
                         </div>
-                    ) : (
+                    )}
+                </div>
+            </section>
+
+            {/* ========= BANNER THEO MÙA ========= */}
+            <section style={{ padding: '0 0 80px 0' }}>
+                <div className="container">
+                    <div className="seasonal-banner" style={{ 
+                        borderRadius: 'var(--radius-lg)', 
+                        overflow: 'hidden', 
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        minHeight: '300px',
+                        backgroundImage: 'url(https://images.unsplash.com/photo-1572913017551-71fb278cb7bf?w=1200&q=80)',
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover'
+                    }}>
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(26,26,26,0.9) 0%, rgba(26,26,26,0.4) 100%)' }}></div>
+                        <div style={{ position: 'relative', zIndex: 2, padding: '40px 50px', color: '#fff', maxWidth: '600px' }}>
+                            <div className="badge mb-3" style={{ background: '#4fa8d1', color: '#fff', fontSize: '0.8rem', padding: '6px 12px' }}>
+                                <i className="fa-solid fa-sun mr-1"></i> BST Giải Nhiệt Mùa Hè
+                            </div>
+                            <h3 className="font-serif mb-3" style={{ fontSize: '2.2rem' }}>Thanh mát & Sảng khoái</h3>
+                            <p style={{ opacity: 0.9, lineHeight: 1.6, marginBottom: '25px' }}>
+                                Xua tan cái nóng nực của mùa hè với những ly vang trắng giòn giã hay sâm banh sủi bọt ướp lạnh tuyệt hảo. Sự lựa chọn hoàn hảo cho những buổi tiệc hồ bơi.
+                            </p>
+                            <Link to="/shop?category=trang" className="btn btn-gold px-4">Khám phá Vang Trắng</Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ========= 2. SEASONAL PRODUCTS (VANG TRẮNG / SỦI) ========= */}
+            <section style={{ padding: '0 0 80px 0' }}>
+                <div className="container">
+                    {loading ? renderSkeletons() : (
                         <div className="row">
-                            {featuredWines.map(wine => (
+                            {summerWines.map(wine => (
                                 <div className="col-lg-3 col-md-4 col-6 mb-4" key={wine.id}>
                                     <ProductCard product={wine} />
                                 </div>
                             ))}
                         </div>
                     )}
+                </div>
+            </section>
 
-                    <div className="text-center mt-4">
-                        <Link to="/shop" className="btn btn-outline-gold px-5 py-2">
-                            Xem Tất Cả Sản Phẩm <i className="fa-solid fa-arrow-right ml-2"></i>
-                        </Link>
+            {/* ========= 3. LỰA CHỌN THEO KHẨU VỊ (TABS HOẶC LƯỚI) ========= */}
+            <section style={{ padding: '80px 0', background: 'var(--wine-cream)' }}>
+                <div className="container">
+                    <div className="section-header">
+                        <h2>Lựa Chọn Theo Khẩu Vị</h2>
+                        <div className="section-divider"></div>
+                        <p className="subtitle">Mỗi người một gu thưởng thức. Hãy để chúng tôi tìm ra chai vang dành riêng cho bạn.</p>
+                    </div>
+
+                    <div className="row mb-5">
+                        <div className="col-lg-6 mb-4">
+                            <div className="taste-card" style={{ background: '#fff', padding: '40px', borderRadius: 'var(--radius-lg)', height: '100%', border: '1px solid var(--border-light)', position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', top: '-20px', right: '-20px', fontSize: '10rem', color: 'var(--wine-cream)', zIndex: 0 }}>
+                                    <i className="fa-solid fa-heart"></i>
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1 }}>
+                                    <h3 className="font-serif text-burgundy mb-3">Ngọt ngào, dễ uống</h3>
+                                    <p className="text-secondary mb-4">Lựa chọn lý tưởng cho phái nữ hoặc những người mới bắt đầu làm quen với rượu vang. Vị ngọt dịu, hương trái cây đậm đà không gắt cồn.</p>
+                                    <div className="row">
+                                        {sweetWines.slice(0, 2).map(wine => (
+                                            <div className="col-6" key={wine.id}>
+                                                <ProductCard product={wine} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-6 mb-4">
+                            <div className="taste-card" style={{ background: '#fff', padding: '40px', borderRadius: 'var(--radius-lg)', height: '100%', border: '1px solid var(--border-light)', position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', top: '-20px', right: '-20px', fontSize: '10rem', color: 'var(--wine-cream)', zIndex: 0 }}>
+                                    <i className="fa-solid fa-wine-bottle"></i>
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1 }}>
+                                    <h3 className="font-serif text-burgundy mb-3">Đậm đà, cấu trúc chắc</h3>
+                                    <p className="text-secondary mb-4">Dành cho những quý ông sành sỏi. Hương gỗ sồi xen lẫn vị chát (tannin) mạnh mẽ, mang lại hậu vị kéo dài đầy ấn tượng.</p>
+                                    <div className="row">
+                                        {boldWines.slice(0, 2).map(wine => (
+                                            <div className="col-6" key={wine.id}>
+                                                <ProductCard product={wine} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* ========= PROMO BANNER ========= */}
-            <section className="position-relative" style={{ padding: '100px 0', backgroundImage: 'url(https://images.unsplash.com/photo-1543499459-d1460946bdc6?w=1920&q=80)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}>
-                <div className="position-absolute" style={{ inset: 0, background: 'linear-gradient(135deg, rgba(107,29,42,0.85), rgba(26,26,26,0.85))' }}></div>
-                <div className="container position-relative text-center text-white" style={{ zIndex: 2 }}>
-                    <div style={{ color: 'var(--wine-gold)', fontSize: '0.82rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '15px' }}>
-                        ✦ Ưu đãi đặc biệt ✦
-                    </div>
-                    <h2 className="font-serif mb-3" style={{ fontSize: '2.5rem' }}>Miễn Phí Giao Hàng</h2>
-                    <p style={{ fontSize: '1.1rem', opacity: 0.9, maxWidth: '500px', margin: '0 auto 30px' }}>
-                        Cho tất cả đơn hàng từ 500.000₫ trong nội thành TP.HCM. Giao hàng hỏa tốc 2 giờ.
-                    </p>
-                    <Link to="/shop" className="btn btn-gold btn-lg px-5">
-                        Mua Ngay <i className="fa-solid fa-arrow-right ml-2"></i>
-                    </Link>
-                </div>
-            </section>
-
-            {/* ========= WHY CHOOSE US ========= */}
+            {/* ========= 4. HOT TRENDS ========= */}
             <section style={{ padding: '80px 0' }}>
                 <div className="container">
                     <div className="section-header">
-                        <h2>Tại Sao Chọn Chúng Tôi</h2>
+                        <h2>Xu Hướng Hiện Nay (Hot Trends)</h2>
                         <div className="section-divider"></div>
-                        <p className="subtitle">Royal Wine Estate - Đối tác tin cậy cho mọi trải nghiệm vang</p>
+                        <p className="subtitle">Những dòng vang đang làm mưa làm gió trong cộng đồng yêu rượu</p>
                     </div>
+
+                    {loading ? renderSkeletons() : (
+                        <div className="row">
+                            {hotTrends.map(wine => (
+                                <div className="col-lg-3 col-md-4 col-6 mb-4" key={wine.id}>
+                                    <ProductCard product={wine} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </section>
+
+
+            {/* ========= WHY CHOOSE US ========= */}
+            <section style={{ padding: '80px 0', background: 'var(--wine-dark)', color: '#fff' }}>
+                <div className="container">
                     <div className="row">
                         {features.map((f, idx) => (
-                            <div className="col-lg-3 col-md-6 mb-4" key={idx}>
-                                <div className="feature-card h-100">
-                                    <div className="feature-icon">
-                                        <i className={`fa-solid ${f.icon}`}></i>
-                                    </div>
-                                    <h5 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '10px', fontFamily: "'Playfair Display', serif" }}>{f.title}</h5>
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: 0, lineHeight: 1.6 }}>{f.desc}</p>
+                            <div className="col-lg-3 col-md-6 mb-4 mb-lg-0 text-center" key={idx}>
+                                <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--wine-gold)', fontSize: '1.5rem', margin: '0 auto 20px' }}>
+                                    <i className={`fa-solid ${f.icon}`}></i>
                                 </div>
+                                <h5 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '10px' }}>{f.title}</h5>
+                                <p style={{ color: 'var(--text-light)', fontSize: '0.85rem', marginBottom: 0, opacity: 0.8 }}>{f.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -188,12 +356,16 @@ const Home = () => {
 
             {/* ========= BLOG SECTION ========= */}
             {posts.length > 0 && (
-                <section style={{ padding: '80px 0', background: 'var(--wine-cream)' }}>
+                <section style={{ padding: '80px 0', background: 'var(--wine-ivory)' }}>
                     <div className="container">
-                        <div className="section-header">
-                            <h2>Tin Tức & Bài Viết</h2>
-                            <div className="section-divider"></div>
-                            <p className="subtitle">Cập nhật kiến thức và xu hướng mới nhất về thế giới rượu vang</p>
+                        <div className="d-flex justify-content-between align-items-end mb-5">
+                            <div>
+                                <h2 className="font-serif mb-2">Tạp Chí Rượu Vang</h2>
+                                <p className="text-secondary mb-0">Kiến thức thưởng thức và tin tức mới nhất</p>
+                            </div>
+                            <Link to="/blog" className="btn btn-outline-gold d-none d-md-inline-block">
+                                Khám phá thêm <i className="fa-solid fa-arrow-right ml-2"></i>
+                            </Link>
                         </div>
                         <div className="row">
                             {posts.map(post => (
@@ -216,77 +388,14 @@ const Home = () => {
                                             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                                 {post.shortDescription || post.content?.substring(0, 120) || 'Khám phá thêm về thế giới rượu vang...'}
                                             </p>
-                                            <Link to={`/blog/${post.id}`} className="text-decoration-none" style={{ color: 'var(--wine-gold)', fontWeight: 600, fontSize: '0.88rem' }}>
-                                                Đọc thêm <i className="fa-solid fa-arrow-right ml-1" style={{ fontSize: '0.75rem' }}></i>
-                                            </Link>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div className="text-center mt-3">
-                            <Link to="/blog" className="btn btn-outline-gold px-5 py-2">
-                                Xem Tất Cả Bài Viết <i className="fa-solid fa-arrow-right ml-2"></i>
-                            </Link>
-                        </div>
                     </div>
                 </section>
             )}
-
-            {/* ========= BRAND STORY ========= */}
-            <section style={{ padding: '80px 0' }}>
-                <div className="container">
-                    <div className="row align-items-center">
-                        <div className="col-lg-6 mb-4 mb-lg-0">
-                            <div style={{ position: 'relative' }}>
-                                <img
-                                    src="https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                    alt="Vineyard"
-                                    className="img-fluid"
-                                    style={{ borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-lg)' }}
-                                />
-                                <div style={{
-                                    position: 'absolute', bottom: '-20px', right: '-20px',
-                                    background: 'linear-gradient(135deg, var(--wine-gold), #D4B85A)',
-                                    color: '#fff', padding: '20px 30px', borderRadius: 'var(--radius-md)',
-                                    boxShadow: 'var(--shadow-gold)', textAlign: 'center'
-                                }}>
-                                    <div style={{ fontSize: '2rem', fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>10+</div>
-                                    <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Năm kinh nghiệm</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-6 pl-lg-5">
-                            <div style={{ color: 'var(--wine-gold)', fontSize: '0.82rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '10px' }}>
-                                Về chúng tôi
-                            </div>
-                            <h2 className="font-serif mb-4" style={{ fontSize: '2rem', lineHeight: 1.3 }}>Câu Chuyện Royal Wine Estate</h2>
-                            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '15px' }}>
-                                Sự kết hợp hoàn hảo giữa truyền thống lâu đời và nghệ thuật thưởng thức hiện đại.
-                                Royal Wine Estate mang đến cho bạn những trải nghiệm vang đích thực nhất, được lựa chọn kỹ lưỡng bởi các chuyên gia Sommelier hàng đầu.
-                            </p>
-                            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '25px' }}>
-                                Từ những vườn nho ngập nắng của Bordeaux cho đến những hầm rượu danh tiếng tại Tuscany.
-                                Mọi tinh hoa đều hội tụ tại đây.
-                            </p>
-                            <div className="d-flex" style={{ gap: '30px', flexWrap: 'wrap' }}>
-                                <div>
-                                    <div style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--wine-burgundy)', fontFamily: "'Playfair Display', serif" }}>500+</div>
-                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Sản phẩm</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--wine-burgundy)', fontFamily: "'Playfair Display', serif" }}>15+</div>
-                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Quốc gia</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--wine-burgundy)', fontFamily: "'Playfair Display', serif" }}>10K+</div>
-                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Khách hàng</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 };

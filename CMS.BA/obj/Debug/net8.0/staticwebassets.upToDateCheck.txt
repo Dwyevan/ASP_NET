@@ -60,3 +60,4 @@ wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
 wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
 wwwroot\uploads\059abd7c-f565-4265-b02b-367bcb4e7117_PORSCHE 911 GT3 RS (1).jpg
 wwwroot\uploads\40dd477d-a7b9-4e29-b6a0-762baddb4794_PORSCHE 911 GT3 RS (1).jpg
+wwwroot\uploads\6cf0addb-f6f0-43d7-9eca-fe6c5f5aceb7_PORSCHE 911 GT3 RS (1).jpg

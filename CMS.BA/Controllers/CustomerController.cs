@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq; // Bắt buộc thêm để dùng được các hàm truy vấn Where, ToList
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -35,21 +36,44 @@ namespace CMS.Backend.Controllers
         }
 
         //--------------------------------------------------
-        // XÓA KHÁCH HÀNG (DELETE)
+        // KHÓA / MỞ KHÓA KHÁCH HÀNG (TOGGLE LOCK)
         //--------------------------------------------------
-        public IActionResult Delete(int id)
+        [HttpPost]
+        public IActionResult ToggleLock(int id)
         {
-            // Tìm khách hàng theo ID truyền xuống
             var customer = _context.Customers.Find(id);
-
             if (customer != null)
             {
-                _context.Customers.Remove(customer); // Đánh dấu xóa
-                _context.SaveChanges();              // Lưu thay đổi xuống SQL Server
+                if (customer.Password.StartsWith("[LOCKED]"))
+                {
+                    // Mở khóa: Cắt bỏ chữ [LOCKED]
+                    customer.Password = customer.Password.Substring(8);
+                }
+                else
+                {
+                    // Khóa: Thêm chữ [LOCKED] lên đầu
+                    customer.Password = "[LOCKED]" + customer.Password;
+                }
+                _context.SaveChanges();
             }
 
-            // Xóa xong tự động quay lại trang danh sách
             return RedirectToAction("Index");
+        }
+
+        //--------------------------------------------------
+        // XEM CHI TIẾT KHÁCH HÀNG (KÈM LỊCH SỬ ĐƠN HÀNG)
+        //--------------------------------------------------
+        public IActionResult Details(int id)
+        {
+            // Tải Customer kèm toàn bộ danh sách Orders (và OrderDetails bên trong)
+            var customer = _context.Customers
+                .Include(c => c.Orders)
+                    .ThenInclude(o => o.OrderDetails)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (customer == null) return NotFound();
+
+            return View(customer);
         }
     }
 }

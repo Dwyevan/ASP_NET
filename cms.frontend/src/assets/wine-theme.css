@@ -297,6 +297,53 @@ img {
   transform: translateY(0);
 }
 
+/* Dropdown Menu */
+.nav-item-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-menu-wine {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 220px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-light);
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all var(--transition-base);
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+.nav-item-dropdown:hover .dropdown-menu-wine {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item-wine {
+  display: block;
+  padding: 10px 20px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  border-left: 3px solid transparent;
+}
+
+.dropdown-item-wine:hover {
+  background: var(--surface-light);
+  color: var(--wine-burgundy);
+  border-left-color: var(--wine-gold);
+}
+
 /* ---------- 6. Hero Section ---------- */
 .hero-section {
   position: relative;
@@ -387,8 +434,8 @@ img {
 
 /* ---------- 8. Product Card ---------- */
 .product-card {
-  background: var(--surface-card);
-  border: 1px solid var(--border-light);
+  background: #FFFFFF;
+  border: none;
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: all var(--transition-base);
@@ -396,12 +443,12 @@ img {
   height: 100%;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
 .product-card:hover {
   transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
-  border-color: transparent;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .product-card-image {
@@ -410,8 +457,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  background: linear-gradient(180deg, #fdfbf7 0%, #f5f0e8 100%);
+  padding: 30px;
+  background: #FFFFFF;
   overflow: hidden;
 }
 
@@ -420,6 +467,7 @@ img {
   max-width: 100%;
   object-fit: contain;
   transition: transform var(--transition-slow);
+  mix-blend-mode: multiply;
 }
 
 .product-card:hover .product-card-image img {
@@ -1647,4 +1695,35 @@ img {
 .guarantee-item span {
   font-size: 0.9rem;
   color: var(--text-secondary);
+}
+
+/* Category Card Custom Style */
+.category-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--wine-gold) !important;
+}
+.category-card:hover i {
+  color: #fff !important;
+}
+.category-card:hover div {
+  background: var(--wine-gold) !important;
+}
+.category-card:hover span {
+  color: var(--wine-burgundy) !important;
+}
+
+/* Category Image Card Custom Style */
+.category-image-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+}
+.category-image-card:hover .category-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%) !important;
+}
+.category-image-card:hover .category-content {
+  padding-bottom: 35px !important;
+}
+.category-image-card:hover .explore-btn {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }

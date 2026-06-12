@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../components/CartProvider';
+import { useAuth } from '../components/AuthProvider';
 import { formatCurrency } from '../utils/formatters';
 import orderService from '../services/orderService';
 
 const Checkout = () => {
     const { cartItems, getCartTotal, clearCart, addToast } = useCart();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -35,11 +37,32 @@ const Checkout = () => {
         setIsSubmitting(true);
         try {
             const orderPayload = {
-                customerId: 0,
+                customerId: user ? (user.Id || user.id) : 0,
                 notes: formData.notes || '',
                 cart: cartItems.map(i => ({ productId: i.id, quantity: i.quantity, unitPrice: i.price }))
             };
-            await orderService.createOrder(orderPayload);
+            const response = await orderService.createOrder(orderPayload);
+            
+            // Xử lý thanh toán MoMo nếu khách chọn
+            if (formData.paymentMethod === 'momo') {
+                try {
+                    const momoResponse = await orderService.createMoMoPayment({
+                        orderId: response.orderId || response.OrderId,
+                        amount: getCartTotal()
+                    });
+                    if (momoResponse.payUrl) {
+                        clearCart();
+                        window.location.href = momoResponse.payUrl;
+                        return; // Dừng lại ở đây vì trình duyệt sẽ chuyển trang
+                    }
+                } catch (momoError) {
+                    console.error("Lỗi tạo thanh toán MoMo:", momoError.response?.data || momoError.message || momoError);
+                    addToast('Lỗi thanh toán MoMo', 'Không thể khởi tạo giao dịch. Vui lòng thử lại sau.', 'error');
+                    setIsSubmitting(false);
+                    return;
+                }
+            }
+
             clearCart();
             setOrderSuccess(true);
             addToast('Đặt hàng thành công!', 'Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.', 'success');
@@ -181,24 +204,23 @@ const Checkout = () => {
                                 </div>
 
                                 <div
-                                    className={`payment-option ${formData.paymentMethod === 'banking' ? 'selected' : ''}`}
-                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'banking' }))}
+                                    className={`payment-option ${formData.paymentMethod === 'momo' ? 'selected' : ''}`}
+                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'momo' }))}
                                 >
                                     <div className="d-flex align-items-center" style={{ gap: '12px' }}>
-                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'banking'} onChange={() => { }} style={{ accentColor: 'var(--wine-gold)' }} />
+                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'momo'} onChange={() => { }} style={{ accentColor: 'var(--wine-gold)' }} />
                                         <div>
                                             <div style={{ fontWeight: 600 }}>
-                                                <i className="fa-solid fa-building-columns mr-2" style={{ color: '#3498DB' }}></i>
-                                                Chuyển khoản ngân hàng
+                                                <i className="fa-solid fa-wallet mr-2" style={{ color: '#A50064' }}></i>
+                                                Thanh toán qua Ví MoMo
                                             </div>
-                                            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>Quét mã QR để thanh toán nhanh chóng</div>
+                                            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>Quét mã QR bằng ứng dụng MoMo</div>
                                         </div>
                                     </div>
-                                    {formData.paymentMethod === 'banking' && (
+                                    {formData.paymentMethod === 'momo' && (
                                         <div className="text-center mt-3 p-3" style={{ background: 'var(--surface-light)', borderRadius: 'var(--radius-md)' }}>
-                                            <img src="https://placehold.co/150x150?text=QR+Code" alt="QR" style={{ borderRadius: '8px' }} className="mb-2" />
-                                            <p style={{ fontWeight: 600, marginBottom: '2px', fontSize: '0.9rem' }}>ROYAL WINE ESTATE</p>
-                                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 0 }}>Quét mã trên ứng dụng ngân hàng</p>
+                                            <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo" style={{ height: '40px' }} className="mb-2" />
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 0 }}>Hệ thống sẽ chuyển bạn sang trang thanh toán an toàn của MoMo.</p>
                                         </div>
                                     )}
                                 </div>

@@ -22,6 +22,11 @@ namespace CMS.BA.Controllers
         public decimal UnitPrice { get; set; }
     }
 
+    public class CancelRequest
+    {
+        public string Reason { get; set; }
+    }
+
     [Route("api/Orders")]
     [ApiController]
     public class OrdersAPIController : ControllerBase
@@ -129,6 +134,59 @@ namespace CMS.BA.Controllers
                 .ToList();
 
             return Ok(history);
+        }
+
+        [HttpPut("cancel/{id}")]
+        public IActionResult CancelOrder(int id, [FromBody] CancelRequest cancelRequest)
+        {
+            var order = _context.Orders.Find(id);
+            if (order == null)
+            {
+                return NotFound(new { message = "Không tìm thấy đơn hàng" });
+            }
+
+            int finalStatus = order.Status;
+
+            // Nếu đơn hàng đang ở trạng thái 0 (Chờ duyệt COD) -> Hủy bình thường (Status 3)
+            if (order.Status == 0)
+            {
+                order.Status = 3;
+                finalStatus = 3;
+            }
+            // Nếu đơn hàng ở trạng thái 10 (Chờ duyệt MoMo) -> Yêu cầu hoàn tiền (Status 13)
+            else if (order.Status == 10)
+            {
+                order.Status = 13;
+                finalStatus = 13;
+            }
+            // Các trạng thái khác không cho phép hủy
+            else
+            {
+                return BadRequest(new { message = "Đơn hàng này không thể hủy. Vui lòng liên hệ Hotline." });
+            }
+
+            _context.SaveChanges();
+
+            // Lưu lý do hủy vào JSON tĩnh (Hack không đụng DB)
+            try 
+            {
+                var filePath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "CancelReasons.json");
+                var reasons = new Dictionary<string, string>();
+                
+                if (System.IO.File.Exists(filePath))
+                {
+                    var json = System.IO.File.ReadAllText(filePath);
+                    reasons = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(json) ?? new Dictionary<string, string>();
+                }
+                
+                reasons[id.ToString()] = cancelRequest?.Reason ?? "Không có lý do";
+                
+                System.IO.File.WriteAllText(filePath, System.Text.Json.JsonSerializer.Serialize(reasons));
+            }
+            catch (Exception) { /* Bỏ qua lỗi ghi file */ }
+
+            string msg = finalStatus == 3 ? "Đã hủy đơn hàng thành công" : "Đã gửi yêu cầu hủy và hoàn tiền";
+            return Ok(new { message = msg, status = finalStatus });
         }
     }
 }

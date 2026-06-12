@@ -30,6 +30,8 @@ namespace CMS.BA.Controllers
                     p.Title,
                     p.ImageUrl,
                     p.CreatedDate,
+                    p.CategoryId,
+                    p.Content,
                     CategoryName = p.Category != null ? p.Category.Name : "Không có"
                 })
                 .ToList();
@@ -50,6 +52,8 @@ namespace CMS.BA.Controllers
                     p.Title,
                     p.ImageUrl,
                     p.CreatedDate,
+                    p.CategoryId,
+                    p.Content,
                     CategoryName = p.Category != null ? p.Category.Name : "Không có"
                 })
                 .ToList();
@@ -63,7 +67,17 @@ namespace CMS.BA.Controllers
         {
             var post = _context.Posts
                 .Include(p => p.Category)
-                .FirstOrDefault(p => p.Id == id);
+                .Where(p => p.Id == id)
+                .Select(p => new {
+                    p.Id,
+                    p.Title,
+                    p.ImageUrl,
+                    p.CreatedDate,
+                    p.CategoryId,
+                    p.Content,
+                    Category = p.Category != null ? new { p.Category.Id, p.Category.Name } : null
+                })
+                .FirstOrDefault();
 
             if (post == null)
             {

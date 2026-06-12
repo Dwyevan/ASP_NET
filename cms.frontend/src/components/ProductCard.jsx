@@ -27,30 +27,14 @@ const ProductCard = ({ product }) => {
 
             {/* Image */}
             <div className="product-card-image">
-                <img
-                    src={product.imageUrl || 'https://placehold.co/200x300?text=Wine'}
-                    alt={product.name}
-                    onError={(e) => { e.target.src = 'https://placehold.co/200x300?text=Wine'; }}
-                />
-                {/* Overlay Actions */}
-                <div className="product-card-overlay">
-                    <Link
-                        to={`/product/${product.id}`}
-                        className="btn-icon btn-icon-white"
-                        title="Xem chi tiết"
-                    >
-                        <i className="fa-solid fa-eye"></i>
-                    </Link>
-                    {!isOutOfStock && (
-                        <button
-                            className="btn-icon btn-icon-gold"
-                            onClick={handleAddToCart}
-                            title="Thêm vào giỏ hàng"
-                        >
-                            <i className="fa-solid fa-cart-plus"></i>
-                        </button>
-                    )}
-                </div>
+                <Link to={`/product/${product.id}`} style={{ display: 'block', height: '100%' }}>
+                    <img
+                        src={product.imageUrl || 'https://placehold.co/200x300?text=Wine'}
+                        alt={product.name}
+                        onError={(e) => { e.target.src = 'https://placehold.co/200x300?text=Wine'; }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                </Link>
             </div>
 
             {/* Body */}
@@ -91,7 +75,7 @@ const ProductCard = ({ product }) => {
                             }}
                             title="Thêm vào giỏ"
                         >
-                            <i className="fa-solid fa-plus" style={{ fontSize: '0.8rem' }}></i>
+                            <i className="fa-solid fa-cart-plus" style={{ fontSize: '0.9rem' }}></i>
                         </button>
                     ) : (
                         <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Hết hàng</span>

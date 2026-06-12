@@ -31,6 +31,7 @@ namespace CMS.BA.Controllers
         [HttpPost]
         public IActionResult Create(Category model)
         {
+            ModelState.Remove("Posts");
             if (ModelState.IsValid)
             {
                 _context.Categories.Add(model);
@@ -51,6 +52,7 @@ namespace CMS.BA.Controllers
         [HttpPost]
         public IActionResult Edit(Category model)
         {
+            ModelState.Remove("Posts");
             if (ModelState.IsValid)
             {
                 _context.Categories.Update(model);

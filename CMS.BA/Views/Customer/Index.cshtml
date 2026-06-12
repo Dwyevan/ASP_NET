@@ -30,8 +30,8 @@
                             <th class="text-start">Họ tên Khách hàng</th>
                             <th class="text-start">Email</th>
                             <th class="text-center">Số điện thoại</th>
-                            <th class="text-start">Địa chỉ giao hàng</th>
-                            <th style="width: 120px;">Thao tác</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th style="width: 150px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,15 +41,45 @@
                             {
                                 <tr>
                                     <td class="text-center fw-bold text-secondary">#@item.Id</td>
-                                    <td class="text-start fw-bold text-dark">@item.FullName</td>
+                                    <td class="text-start fw-bold text-dark">
+                                        @item.FullName
+                                        @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
+                                        {
+                                            <i class="bi bi-lock-fill text-danger ms-1" title="Tài khoản đang bị khóa"></i>
+                                        }
+                                    </td>
                                     <td class="text-start">@item.Email</td>
                                     <td class="text-center fw-semibold text-secondary">@item.Phone</td>
-                                    <td class="text-start text-muted small">@item.Address</td>
+                                    <td class="text-center">
+                                        @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
+                                        {
+                                            <span class="badge bg-danger rounded-pill"><i class="bi bi-lock-fill me-1"></i>Đã Khóa</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success rounded-pill"><i class="bi bi-check-circle-fill me-1"></i>Hoạt động</span>
+                                        }
+                                    </td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger shadow-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
-                                                <i class="bi bi-trash"></i>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white shadow-sm" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i>
                                             </a>
+                                            <form asp-action="ToggleLock" method="post" class="m-0">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-success shadow-sm" title="Mở khóa tài khoản" onclick="return confirm('Bạn có chắc chắn muốn MỞ KHÓA cho tài khoản này?');">
+                                                        <i class="bi bi-unlock-fill"></i>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Khóa tài khoản" onclick="return confirm('Khóa tài khoản này sẽ khiến khách hàng không thể đăng nhập. Bạn có chắc chắn?');">
+                                                        <i class="bi bi-lock-fill"></i>
+                                                    </button>
+                                                }
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

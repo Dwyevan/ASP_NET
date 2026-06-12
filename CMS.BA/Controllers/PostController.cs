@@ -53,6 +53,7 @@ namespace CMS.Backend.Controllers
         {
             // Loại bỏ thuộc tính liên kết bảng khỏi danh sách kiểm tra validate
             ModelState.Remove("Category");
+            ModelState.Remove("ImageUrl");
 
             if (ModelState.IsValid)
             {
@@ -101,6 +102,7 @@ namespace CMS.Backend.Controllers
         {
             // SỬA LỖI TẠI ĐÂY: Ép buộc bỏ qua việc kiểm tra trường liên kết 'Category' bị null
             ModelState.Remove("Category");
+            ModelState.Remove("ImageUrl");
 
             if (ModelState.IsValid)
             {

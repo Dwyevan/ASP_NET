@@ -6,6 +6,7 @@ import './assets/wine-theme.css';
 
 // Context
 import { CartProvider } from './components/CartProvider';
+import { AuthProvider } from './components/AuthProvider';
 
 // Layout Components
 import Header from './components/Header';
@@ -22,12 +23,16 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
         <ScrollToTop />
         <div className="d-flex flex-column min-vh-100">
           <Header />
@@ -41,6 +46,9 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:id" element={<BlogDetail />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
@@ -50,7 +58,8 @@ function App() {
           <Toast />
         </div>
       </Router>
-    </CartProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

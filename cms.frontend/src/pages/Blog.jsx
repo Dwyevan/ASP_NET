@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import blogService from '../services/blogService';
 import { formatDate } from '../utils/formatters';
 
@@ -17,6 +17,7 @@ const Blog = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCat, setSelectedCat] = useState(null);
+    const [searchParams] = useSearchParams();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,6 +29,12 @@ const Blog = () => {
                 ]);
                 if (postsData.status === 'fulfilled') setPosts(postsData.value);
                 if (catData.status === 'fulfilled') setCategories(catData.value);
+
+                // Check URL params for category filter
+                const catParam = searchParams.get('category');
+                if (catParam) {
+                    setSelectedCat(parseInt(catParam));
+                }
             } catch (error) {
                 console.error("Lỗi tải blog:", error);
             } finally {
@@ -35,7 +42,7 @@ const Blog = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [searchParams]);
 
     const filteredPosts = selectedCat
         ? posts.filter(p => p.categoryId === selectedCat)

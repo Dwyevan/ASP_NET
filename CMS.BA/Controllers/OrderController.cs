@@ -17,39 +17,96 @@ namespace CMS.Backend.Controllers
 
         //--------------------------------------------------
         // BÀI TẬP 6: HIỂN THỊ DANH SÁCH ĐƠN HÀNG (INDEX)
+        // CÓ TÌM KIẾM VÀ LỌC TRẠNG THÁI
         //--------------------------------------------------
-        public IActionResult Index()
+        public IActionResult Index(string searchString, int? statusFilter)
         {
-            // SỬA TẠI ĐÂY: Thêm .Include(o => o.Customer) để lấy kèm tên Khách hàng mua đơn đó
-            var orders = _context.Orders
-                .Include(o => o.Customer)
-                .ToList();
+            // Truy vấn cơ bản, kèm thông tin Khách hàng
+            var query = _context.Orders.Include(o => o.Customer).AsQueryable();
+
+            // 1. Lọc theo trạng thái (nếu có chọn)
+            if (statusFilter.HasValue)
+            {
+                query = query.Where(o => o.Status == statusFilter.Value);
+            }
+
+            // 2. Tìm kiếm theo ID, Tên KH, SĐT, Email
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var lowerSearch = searchString.ToLower();
+                query = query.Where(o => 
+                    o.Id.ToString() == lowerSearch ||
+                    (o.Customer != null && (
+                        o.Customer.FullName.ToLower().Contains(lowerSearch) ||
+                        o.Customer.Phone.Contains(lowerSearch) ||
+                        o.Customer.Email.ToLower().Contains(lowerSearch)
+                    ))
+                );
+            }
+
+            // Sắp xếp đơn hàng mới nhất lên đầu
+            var orders = query.OrderByDescending(o => o.OrderDate).ToList();
+
+            // Truyền lại giá trị để giữ trạng thái cho giao diện
+            ViewBag.CurrentSearch = searchString;
+            ViewBag.CurrentFilter = statusFilter;
 
             return View(orders);
         }
 
         //--------------------------------------------------
         // BÀI TẬP 7: XEM CHI TIẾT CỦA MỘT ĐƠN HÀNG CỤ THỂ (DETAILS)
+        // NÂNG CẤP LẤY TOÀN BỘ THÔNG TIN KHÁCH HÀNG VÀ ĐƠN HÀNG
         //--------------------------------------------------
         public IActionResult Details(int id)
         {
-            // Lấy ra danh sách các sản phẩm nằm trong đơn hàng có mã ID tương ứng
-            // .Include(d => d.Product) giúp kéo theo thông tin tên sản phẩm, ảnh, giá bán
-            var orderDetails = _context.OrderDetails
-                .Include(d => d.Product)
-                .Where(d => d.OrderId == id)
-                .ToList();
+            // Truy vấn đối tượng Order, kéo theo Customer và danh sách OrderDetails (kèm Product)
+            var order = _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(d => d.Product)
+                .FirstOrDefault(o => o.Id == id);
 
-            // Đề phòng trường hợp bấm nhầm ID đơn hàng không tồn tại
-            if (orderDetails == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            // Gửi mã đơn hàng qua ViewBag để hiển thị làm tiêu đề ngoài giao diện View
-            ViewBag.OrderId = id;
+            // Đọc lý do hủy đơn (Nếu có)
+            if (order.Status == 3 || order.Status == 13 || order.Status == 14)
+            {
+                try 
+                {
+                    var filePath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "CancelReasons.json");
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        var json = System.IO.File.ReadAllText(filePath);
+                        var reasons = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.Dictionary<string, string>>(json);
+                        if (reasons != null && reasons.ContainsKey(id.ToString()))
+                        {
+                            ViewBag.CancelReason = reasons[id.ToString()];
+                        }
+                    }
+                }
+                catch (System.Exception) { }
+            }
 
-            return View(orderDetails);
+            return View(order); // Truyền nguyên object Order sang View
+        }
+
+        //--------------------------------------------------
+        // CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
+        //--------------------------------------------------
+        [HttpPost]
+        public IActionResult UpdateStatus(int id, int status)
+        {
+            var order = _context.Orders.Find(id);
+            if (order != null)
+            {
+                order.Status = status; // 0: Chờ duyệt, 1: Đang giao, 2: Hoàn tất, 3: Đã hủy
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
