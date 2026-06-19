@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import authService from '../services/authService';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -12,10 +13,27 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Khôi phục user từ localStorage khi reload trang
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
+        // Khôi phục user từ token trong localStorage khi reload trang
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                // Kiểm tra token hết hạn
+                if (decoded.exp * 1000 < Date.now()) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    setUser(null);
+                } else {
+                    const storedUser = localStorage.getItem('user');
+                    if (storedUser) {
+                        setUser(JSON.parse(storedUser));
+                    }
+                }
+            } catch (error) {
+                console.error("Invalid token:", error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            }
         }
         setLoading(false);
     }, []);
@@ -29,7 +47,11 @@ export const AuthProvider = ({ children }) => {
                 return { success: true, message: response.message, isAdmin: true };
             }
 
-            // Nếu là Khách hàng bình thường
+            // Nếu là Khách hàng bình thường, lưu token
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+            }
+            
             const userData = response.customer;
             setUser(userData);
             localStorage.setItem('user', JSON.stringify(userData));
@@ -55,6 +77,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
     };
 
     const value = {

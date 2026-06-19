@@ -47,6 +47,11 @@ namespace CMS.Backend.Controllers
             // Sắp xếp đơn hàng mới nhất lên đầu
             var orders = query.OrderByDescending(o => o.OrderDate).ToList();
 
+            // Tính toán Dashboard Stats
+            ViewBag.TotalOrders = _context.Orders.Count();
+            ViewBag.TotalRevenue = _context.Orders.Where(o => o.Status == 2 || o.Status == 10 || o.Status == 11 || o.Status == 12).Sum(o => o.TotalAmount);
+            ViewBag.PendingOrders = _context.Orders.Count(o => o.Status == 0 || o.Status == 10);
+
             // Truyền lại giá trị để giữ trạng thái cho giao diện
             ViewBag.CurrentSearch = searchString;
             ViewBag.CurrentFilter = statusFilter;
@@ -104,6 +109,27 @@ namespace CMS.Backend.Controllers
             if (order != null)
             {
                 order.Status = status; // 0: Chờ duyệt, 1: Đang giao, 2: Hoàn tất, 3: Đã hủy
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        //--------------------------------------------------
+        // XÓA ĐƠN HÀNG VĨNH VIỄN
+        //--------------------------------------------------
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var order = _context.Orders.Include(o => o.OrderDetails).FirstOrDefault(o => o.Id == id);
+            if (order != null)
+            {
+                // Xóa chi tiết đơn hàng trước (Tránh lỗi Foreign Key)
+                if (order.OrderDetails != null && order.OrderDetails.Any())
+                {
+                    _context.OrderDetails.RemoveRange(order.OrderDetails);
+                }
+                // Xóa đơn hàng chính
+                _context.Orders.Remove(order);
                 _context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));

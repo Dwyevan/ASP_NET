@@ -236,7 +236,7 @@
     "Parameters": [
       {
         "Name": "response",
-        "Type": "Newtonsoft.Json.Linq.JObject",
+        "Type": "CMS.BA.Controllers.PaymentAPIController\u002BMoMoResponseDto",
         "IsRequired": true
       }
     ],

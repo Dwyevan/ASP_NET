@@ -413,26 +413,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "additionalProperties": {
-                  "$ref": "#/components/schemas/JToken"
-                }
+                "$ref": "#/components/schemas/MoMoResponseDto"
               }
             },
             "text/json": {
               "schema": {
-                "type": "object",
-                "additionalProperties": {
-                  "$ref": "#/components/schemas/JToken"
-                }
+                "$ref": "#/components/schemas/MoMoResponseDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "type": "object",
-                "additionalProperties": {
-                  "$ref": "#/components/schemas/JToken"
-                }
+                "$ref": "#/components/schemas/MoMoResponseDto"
               }
             }
           }
@@ -782,6 +773,10 @@
             "type": "string",
             "nullable": true
           },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "products": {
             "type": "array",
             "items": {
@@ -829,12 +824,6 @@
         },
         "additionalProperties": false
       },
-      "JToken": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/JToken"
-        }
-      },
       "LoginRequest": {
         "type": "object",
         "properties": {
@@ -853,12 +842,34 @@
         "type": "object",
         "properties": {
           "orderId": {
-            "type": "integer",
-            "format": "int32"
+            "nullable": true
           },
           "amount": {
-            "type": "number",
-            "format": "double"
+            "nullable": true
+          },
+          "requestType": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MoMoResponseDto": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "nullable": true
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "nullable": true
+          },
+          "transId": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1021,6 +1032,9 @@
           "imageUrl": {
             "type": "string",
             "nullable": true
+          },
+          "isHidden": {
+            "type": "boolean"
           },
           "categoryProductId": {
             "type": "integer",

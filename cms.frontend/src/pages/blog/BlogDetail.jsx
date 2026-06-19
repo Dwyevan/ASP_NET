@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import blogService from '../services/blogService';
-import { formatDate } from '../utils/formatters';
+import blogService from '../../services/blogService';
+import { formatDate } from '../../utils/formatters';
 
 const BlogDetail = () => {
     const { id } = useParams();

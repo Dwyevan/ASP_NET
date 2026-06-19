@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import blogService from '../services/blogService';
-import { formatDate } from '../utils/formatters';
+import blogService from '../../services/blogService';
+import { formatDate } from '../../utils/formatters';
 
 const blogImages = [
     'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600',

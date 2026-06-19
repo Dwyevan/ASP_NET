@@ -34,14 +34,24 @@
                                     <td class="text-center fw-bold text-secondary">#@item.Id</td>
                                     <td class="text-start fw-bold text-dark">@item.Name</td>
                                     <td class="text-start text-muted">@item.Description</td>
-                                    <td>
-                                        <div class="d-flex gap-2 justify-content-center">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning shadow-sm text-dark" title="Sửa">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger shadow-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục sản phẩm này?');">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle shadow-sm" type="button" id="actionMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-gear"></i> Thao tác
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="actionMenu-@item.Id" style="min-width: 150px;">
+                                                <li>
+                                                    <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item text-warning py-2 fw-bold">
+                                                        <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <a asp-action="Delete" asp-route-id="@item.Id" class="dropdown-item text-danger py-2" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục sản phẩm này?');">
+                                                        <i class="bi bi-trash me-2"></i>Xóa danh mục
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>

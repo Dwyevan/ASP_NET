@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../components/CartProvider';
-import { useAuth } from '../components/AuthProvider';
-import { formatCurrency } from '../utils/formatters';
-import orderService from '../services/orderService';
+import { useCart } from '../../components/CartProvider';
+import { useAuth } from '../../components/AuthProvider';
+import { formatCurrency } from '../../utils/formatters';
+import orderService from '../../services/orderService';
 
 const Checkout = () => {
     const { cartItems, getCartTotal, clearCart, addToast } = useCart();
@@ -44,11 +44,16 @@ const Checkout = () => {
             const response = await orderService.createOrder(orderPayload);
             
             // Xử lý thanh toán MoMo nếu khách chọn
-            if (formData.paymentMethod === 'momo') {
+            if (formData.paymentMethod.startsWith('momo')) {
                 try {
+                    let reqType = 'captureWallet';
+                    if (formData.paymentMethod === 'momo_atm') reqType = 'payWithATM';
+                    if (formData.paymentMethod === 'momo_cc') reqType = 'payWithCC';
+                    
                     const momoResponse = await orderService.createMoMoPayment({
                         orderId: response.orderId || response.OrderId,
-                        amount: getCartTotal()
+                        amount: getCartTotal(),
+                        requestType: reqType
                     });
                     if (momoResponse.payUrl) {
                         clearCart();
@@ -204,11 +209,11 @@ const Checkout = () => {
                                 </div>
 
                                 <div
-                                    className={`payment-option ${formData.paymentMethod === 'momo' ? 'selected' : ''}`}
-                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'momo' }))}
+                                    className={`payment-option ${formData.paymentMethod === 'momo_wallet' ? 'selected' : ''}`}
+                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'momo_wallet' }))}
                                 >
                                     <div className="d-flex align-items-center" style={{ gap: '12px' }}>
-                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'momo'} onChange={() => { }} style={{ accentColor: 'var(--wine-gold)' }} />
+                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'momo_wallet'} onChange={() => { }} style={{ accentColor: '#A50064' }} />
                                         <div>
                                             <div style={{ fontWeight: 600 }}>
                                                 <i className="fa-solid fa-wallet mr-2" style={{ color: '#A50064' }}></i>
@@ -217,12 +222,44 @@ const Checkout = () => {
                                             <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>Quét mã QR bằng ứng dụng MoMo</div>
                                         </div>
                                     </div>
-                                    {formData.paymentMethod === 'momo' && (
+                                    {formData.paymentMethod === 'momo_wallet' && (
                                         <div className="text-center mt-3 p-3" style={{ background: 'var(--surface-light)', borderRadius: 'var(--radius-md)' }}>
                                             <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo" style={{ height: '40px' }} className="mb-2" />
-                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 0 }}>Hệ thống sẽ chuyển bạn sang trang thanh toán an toàn của MoMo.</p>
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 0 }}>Hệ thống sẽ chuyển bạn sang trang quét mã QR của MoMo.</p>
                                         </div>
                                     )}
+                                </div>
+
+                                <div
+                                    className={`payment-option ${formData.paymentMethod === 'momo_atm' ? 'selected' : ''}`}
+                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'momo_atm' }))}
+                                >
+                                    <div className="d-flex align-items-center" style={{ gap: '12px' }}>
+                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'momo_atm'} onChange={() => { }} style={{ accentColor: '#A50064' }} />
+                                        <div>
+                                            <div style={{ fontWeight: 600 }}>
+                                                <i className="fa-solid fa-credit-card mr-2" style={{ color: '#A50064' }}></i>
+                                                Thanh toán bằng Thẻ ATM Nội Địa
+                                            </div>
+                                            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>Chuyển hướng đến trang nhập Thẻ ATM qua cổng MoMo</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    className={`payment-option ${formData.paymentMethod === 'momo_cc' ? 'selected' : ''}`}
+                                    onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'momo_cc' }))}
+                                >
+                                    <div className="d-flex align-items-center" style={{ gap: '12px' }}>
+                                        <input type="radio" name="paymentMethod" checked={formData.paymentMethod === 'momo_cc'} onChange={() => { }} style={{ accentColor: '#1c4a97' }} />
+                                        <div>
+                                            <div style={{ fontWeight: 600 }}>
+                                                <i className="fa-brands fa-cc-visa mr-2" style={{ color: '#1c4a97' }}></i>
+                                                Thanh toán bằng Thẻ Visa / Mastercard
+                                            </div>
+                                            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>Thanh toán qua thẻ quốc tế bảo mật với MoMo</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -284,10 +321,18 @@ const Checkout = () => {
                                 >
                                     {isSubmitting ? (
                                         <><span className="spinner-border spinner-border-sm mr-2"></span> Đang xử lý...</>
+                                    ) : formData.paymentMethod === 'momo_cc' ? (
+                                        <><i className="fa-brands fa-cc-visa mr-2"></i> Thanh Toán Bằng Visa / Mastercard</>
+                                    ) : formData.paymentMethod === 'momo_atm' ? (
+                                        <><i className="fa-solid fa-credit-card mr-2"></i> Thanh Toán Bằng Thẻ ATM</>
+                                    ) : formData.paymentMethod === 'momo_wallet' ? (
+                                        <><i className="fa-solid fa-wallet mr-2"></i> Thanh Toán Qua Ví MoMo</>
                                     ) : (
                                         <><i className="fa-solid fa-shield-check mr-2"></i> Hoàn Tất Đặt Hàng</>
                                     )}
                                 </button>
+
+
 
                                 <p className="text-center mt-3" style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                                     <i className="fa-solid fa-lock mr-1"></i> Thông tin của bạn được bảo mật tuyệt đối

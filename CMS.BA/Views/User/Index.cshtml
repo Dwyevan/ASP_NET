@@ -45,14 +45,24 @@
                                         <span class="badge bg-info text-dark">@item.Role</span>
                                     }
                                 </td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
-                                            <i class="bi bi-pencil-square"></i> Sửa
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa User này?')">
-                                            <i class="bi bi-trash"></i> Xóa
-                                        </a>
+                                <td class="text-center">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle shadow-sm" type="button" id="actionMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-gear"></i> Thao tác
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="actionMenu-@item.Id" style="min-width: 150px;">
+                                            <li>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item text-warning py-2 fw-bold">
+                                                    <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="dropdown-item text-danger py-2" onclick="return confirm('Bạn có chắc muốn xóa User này?')">
+                                                    <i class="bi bi-trash me-2"></i>Xóa tài khoản
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>

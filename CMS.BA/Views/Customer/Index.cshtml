@@ -4,16 +4,19 @@
 }
 
 <div class="container-fluid py-4">
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-header bg-white p-3 border-bottom-0 d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold text-primary text-uppercase mb-0">
-                <i class="bi bi-people-fill me-2"></i>DANH SÁCH KHÁCH HÀNG
-            </h5>
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="card-header bg-white p-4 border-bottom-0 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold text-primary text-uppercase mb-1">
+                    <i class="bi bi-people-fill me-2"></i>DANH SÁCH KHÁCH HÀNG
+                </h5>
+                <p class="text-muted small mb-0">Quản lý và theo dõi hoạt động của khách hàng theo thời gian thực.</p>
+            </div>
             <div class="d-flex gap-2">
-                <form method="get" class="d-flex">
-                    <div class="input-group input-group-sm">
-                        <input name="keyword" class="form-control" placeholder="Tìm kiếm khách hàng..." value="@Context.Request.Query["keyword"]" />
-                        <button class="btn btn-outline-secondary" type="submit" title="Tìm kiếm">
+                <form method="get" class="d-flex bg-light rounded-pill p-1">
+                    <div class="input-group input-group-sm border-0">
+                        <input name="keyword" class="form-control border-0 bg-transparent shadow-none px-3" placeholder="Tìm kiếm khách hàng..." value="@Context.Request.Query["keyword"]" />
+                        <button class="btn btn-primary rounded-pill px-3" type="submit" title="Tìm kiếm">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
@@ -23,63 +26,93 @@
 
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light text-center">
+                <table class="table table-hover align-middle mb-0" id="customerTable">
+                    <thead class="table-light text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
                         <tr>
-                            <th style="width: 80px;">ID</th>
-                            <th class="text-start">Họ tên Khách hàng</th>
-                            <th class="text-start">Email</th>
+                            <th class="ps-4" style="width: 80px;">ID</th>
+                            <th>Khách hàng</th>
                             <th class="text-center">Số điện thoại</th>
+                            <th class="text-center">Thống kê</th>
                             <th class="text-center">Trạng thái</th>
-                            <th style="width: 150px;">Thao tác</th>
+                            <th class="text-center" style="width: 120px;">Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="customerTableBody">
                         @if (Model != null && Model.Any())
                         {
                             foreach (var item in Model)
                             {
-                                <tr>
-                                    <td class="text-center fw-bold text-secondary">#@item.Id</td>
-                                    <td class="text-start fw-bold text-dark">
-                                        @item.FullName
-                                        @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
-                                        {
-                                            <i class="bi bi-lock-fill text-danger ms-1" title="Tài khoản đang bị khóa"></i>
-                                        }
+                                // Tính toán thống kê đơn hàng (Bỏ qua đơn đã hủy Status = 3, 13)
+                                var validOrders = item.Orders?.Where(o => o.Status != 3 && o.Status != 13).ToList();
+                                var totalOrders = validOrders?.Count() ?? 0;
+                                var totalSpent = validOrders?.Sum(o => o.TotalAmount) ?? 0;
+
+                                <tr id="customer-row-@item.Id" class="transition-all">
+                                    <td class="ps-4 fw-bold text-secondary">#@item.Id</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-primary-subtle text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; font-size: 1.2rem;">
+                                                @(string.IsNullOrEmpty(item.FullName) ? "U" : item.FullName.Substring(0, 1).ToUpper())
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold text-dark d-flex align-items-center">
+                                                    @item.FullName
+                                                    @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
+                                                    {
+                                                        <i class="bi bi-lock-fill text-danger ms-2 fs-6" title="Tài khoản đang bị khóa"></i>
+                                                    }
+                                                </h6>
+                                                <span class="text-muted small">@item.Email</span>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td class="text-start">@item.Email</td>
-                                    <td class="text-center fw-semibold text-secondary">@item.Phone</td>
+                                    <td class="text-center fw-medium text-secondary">@(item.Phone ?? "N/A")</td>
+                                    <td class="text-center">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <span class="badge bg-info bg-opacity-10 text-info mb-1 border border-info border-opacity-25"><i class="bi bi-box-seam me-1"></i> @totalOrders đơn</span>
+                                            <span class="text-success fw-bold small">@totalSpent.ToString("N0") đ</span>
+                                        </div>
+                                    </td>
                                     <td class="text-center">
                                         @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
                                         {
-                                            <span class="badge bg-danger rounded-pill"><i class="bi bi-lock-fill me-1"></i>Đã Khóa</span>
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-3 py-2"><i class="bi bi-lock-fill me-1"></i> Đã Khóa</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-success rounded-pill"><i class="bi bi-check-circle-fill me-1"></i>Hoạt động</span>
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i> Hoạt động</span>
                                         }
                                     </td>
-                                    <td>
-                                        <div class="d-flex gap-2 justify-content-center">
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white shadow-sm" title="Xem chi tiết">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <form asp-action="ToggleLock" method="post" class="m-0">
-                                                <input type="hidden" name="id" value="@item.Id" />
-                                                @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
-                                                {
-                                                    <button type="submit" class="btn btn-sm btn-success shadow-sm" title="Mở khóa tài khoản" onclick="return confirm('Bạn có chắc chắn muốn MỞ KHÓA cho tài khoản này?');">
-                                                        <i class="bi bi-unlock-fill"></i>
-                                                    </button>
-                                                }
-                                                else
-                                                {
-                                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Khóa tài khoản" onclick="return confirm('Khóa tài khoản này sẽ khiến khách hàng không thể đăng nhập. Bạn có chắc chắn?');">
-                                                        <i class="bi bi-lock-fill"></i>
-                                                    </button>
-                                                }
-                                            </form>
+                                    <td class="text-center pe-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light dropdown-toggle shadow-sm rounded-pill px-3" type="button" id="actionMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-gear"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="actionMenu-@item.Id">
+                                                <li>
+                                                    <a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item text-primary py-2 fw-medium">
+                                                        <i class="bi bi-eye me-2"></i> Xem chi tiết
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider opacity-50"></li>
+                                                <li>
+                                                    <form asp-action="ToggleLock" method="post" class="m-0">
+                                                        <input type="hidden" name="id" value="@item.Id" />
+                                                        @if (item.Password != null && item.Password.StartsWith("[LOCKED]"))
+                                                        {
+                                                            <button type="submit" class="dropdown-item text-success py-2 fw-medium" onclick="return confirm('Bạn có chắc chắn muốn MỞ KHÓA cho tài khoản này?');">
+                                                                <i class="bi bi-unlock-fill me-2"></i> Mở khóa tài khoản
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="submit" class="dropdown-item text-danger py-2 fw-medium" onclick="return confirm('Khóa tài khoản này sẽ khiến khách hàng không thể đăng nhập. Bạn có chắc chắn?');">
+                                                                <i class="bi bi-lock-fill me-2"></i> Khóa tài khoản
+                                                            </button>
+                                                        }
+                                                    </form>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>
@@ -87,10 +120,10 @@
                         }
                         else
                         {
-                            <tr>
+                            <tr id="emptyRow">
                                 <td colspan="6" class="text-center text-muted py-5">
-                                    <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
-                                    <h5>Chưa có dữ liệu khách hàng!</h5>
+                                    <i class="bi bi-people text-light" style="font-size: 4rem;"></i>
+                                    <h5 class="mt-3 text-secondary">Chưa có dữ liệu khách hàng!</h5>
                                 </td>
                             </tr>
                         }
@@ -100,3 +133,93 @@
         </div>
     </div>
 </div>
+
+<!-- Thêm CSS cho hiệu ứng Sáng Highlight khi có khách mới -->
+<style>
+    .highlight-new-row {
+        animation: highlightAnim 3s ease-out;
+    }
+    
+    @@keyframes highlightAnim {
+        0% { background-color: rgba(25, 135, 84, 0.2); transform: scale(1.01); }
+        50% { background-color: rgba(25, 135, 84, 0.1); }
+        100% { background-color: transparent; transform: scale(1); }
+    }
+</style>
+
+<!-- Tích hợp SignalR Client để nhận sự kiện khách hàng mới -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Kết nối tới AdminHub
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/adminHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        // Lắng nghe sự kiện "ReceiveNewCustomer"
+        connection.on("ReceiveNewCustomer", function (customer) {
+            console.log("Khách hàng mới vừa đăng ký:", customer);
+            
+            // Xóa dòng "Chưa có dữ liệu" nếu có
+            const emptyRow = document.getElementById("emptyRow");
+            if (emptyRow) emptyRow.remove();
+
+            const tbody = document.getElementById("customerTableBody");
+            
+            // Lấy ký tự đầu tiên của tên làm Avatar
+            const avatarChar = (customer.fullName && customer.fullName.length > 0) ? customer.fullName.charAt(0).toUpperCase() : "U";
+            const phone = customer.phone || "N/A";
+            
+            // Tạo HTML cho dòng khách hàng mới
+            const newRowHtml = `
+                <td class="ps-4 fw-bold text-secondary">#${customer.id}</td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="avatar bg-success-subtle text-success fw-bold rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 45px; height: 45px; font-size: 1.2rem;">
+                            ${avatarChar}
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark d-flex align-items-center">
+                                ${customer.fullName}
+                                <span class="badge bg-danger ms-2" style="font-size: 0.6rem; animation: pulse 1s infinite alternate;">MỚI</span>
+                            </h6>
+                            <span class="text-muted small">${customer.email}</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="text-center fw-medium text-secondary">${phone}</td>
+                <td class="text-center">
+                    <div class="d-flex flex-column align-items-center">
+                        <span class="badge bg-info bg-opacity-10 text-info mb-1 border border-info border-opacity-25"><i class="bi bi-box-seam me-1"></i> 0 đơn</span>
+                        <span class="text-success fw-bold small">0 đ</span>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i> Hoạt động</span>
+                </td>
+                <td class="text-center pe-4">
+                    <a href="/Customer/Details/${customer.id}" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm">
+                        <i class="bi bi-eye"></i> Xem
+                    </a>
+                </td>
+            `;
+            
+            // Tạo phần tử <tr>
+            const tr = document.createElement("tr");
+            tr.id = "customer-row-" + customer.id;
+            tr.className = "transition-all highlight-new-row";
+            tr.innerHTML = newRowHtml;
+            
+            // Chèn lên đầu bảng
+            tbody.insertBefore(tr, tbody.firstChild);
+        });
+
+        // Bắt đầu kết nối
+        connection.start().then(function () {
+            console.log("SignalR Connected to AdminHub.");
+        }).catch(function (err) {
+            console.error("Lỗi kết nối SignalR: ", err.toString());
+        });
+    });
+</script>

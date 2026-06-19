@@ -9,13 +9,16 @@ using CMS.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CMS.BA.Controllers
 {
     public class MoMoRequest
     {
-        public int OrderId { get; set; }
-        public decimal Amount { get; set; }
+        public object OrderId { get; set; }
+        public object Amount { get; set; }
+        public string RequestType { get; set; }
     }
 
     [Route("api/Payment")]
@@ -27,36 +30,61 @@ namespace CMS.BA.Controllers
         // Sandbox MoMo Credentials
         private readonly string endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
         private readonly string partnerCode = "MOMOBKUN20180529";
-        private readonly string accessKey = "klm05TvNCpectDTA";
-        private readonly string secretKey = "at67qH6mk8w5c1M940PsuPDoCyp1UvFH";
+        private readonly string accessKey = "klm05TvNBzhg7h7j";
+        private readonly string secretKey = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
 
         public PaymentAPIController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("MoMo")]
         public async Task<IActionResult> CreateMoMoPayment([FromBody] MoMoRequest request)
         {
             try
             {
-                var order = _context.Orders.Find(request.OrderId);
+                int.TryParse(request.OrderId?.ToString(), out int parsedOrderId);
+                var order = _context.Orders.Find(parsedOrderId);
                 if (order == null)
                 {
-                    return BadRequest(new { message = "Không tìm thấy đơn hàng" });
+                    return BadRequest(new { message = $"Không tìm thấy đơn hàng ID: {request.OrderId}" });
                 }
 
-                string orderInfo = "Thanh toan don hang " + request.OrderId;
-                string redirectUrl = "http://localhost:3000/profile";
+                string orderInfo = "Thanh toan don hang " + parsedOrderId;
+                // Tự động lấy đúng port của Frontend từ request Origin/Referer
+                string frontendOrigin = Request.Headers["Origin"].FirstOrDefault() 
+                    ?? Request.Headers["Referer"].FirstOrDefault()?.TrimEnd('/') 
+                    ?? "http://localhost:3001";
+                // Loại bỏ path nếu Referer có kèm path
+                if (frontendOrigin.Contains("/", StringComparison.Ordinal) && frontendOrigin.Count(c => c == '/') > 2)
+                {
+                    var uri = new Uri(frontendOrigin);
+                    frontendOrigin = $"{uri.Scheme}://{uri.Host}:{uri.Port}";
+                }
+                string redirectUrl = frontendOrigin + "/payment-result";
                 string ipnUrl = "https://google.com"; // Webhook tạm vì Sandbox MoMo chặn localhost
                 
-                long amount = Convert.ToInt64(request.Amount);
+                decimal.TryParse(request.Amount?.ToString(), out decimal parsedAmount);
+                if (parsedAmount <= 0)
+                {
+                    return BadRequest(new { message = $"Lỗi: Tổng tiền không hợp lệ ({request.Amount}). Vui lòng không thanh toán giỏ hàng rỗng." });
+                }
+                long amount = Convert.ToInt64(parsedAmount);
+                
+                // MẸO BYPASS SANDBOX: MoMo Test giới hạn tối đa 50.000.000 VNĐ.
+                // Tránh lỗi khi khách mua nhiều vang cao cấp (VD: 77 triệu)
+                if (amount > 50000000)
+                {
+                    amount = 49900000;
+                }
+                
                 string amountStr = amount.ToString();
                 
-                string orderId = request.OrderId.ToString() + "_" + DateTime.Now.Ticks.ToString();
+                string orderId = parsedOrderId.ToString() + "_" + DateTime.Now.Ticks.ToString();
                 string requestId = Guid.NewGuid().ToString();
                 string extraData = ""; 
-                string requestType = "captureWallet";
+                string requestType = !string.IsNullOrEmpty(request.RequestType) ? request.RequestType : "captureWallet";
 
                 // Đảm bảo rawHash đúng thứ tự alpha: accessKey, amount, extraData, ipnUrl, orderId, orderInfo, partnerCode, redirectUrl, requestId, requestType
                 string rawHash = $"accessKey={accessKey}&amount={amountStr}&extraData={extraData}&ipnUrl={ipnUrl}&orderId={orderId}&orderInfo={orderInfo}&partnerCode={partnerCode}&redirectUrl={redirectUrl}&requestId={requestId}&requestType={requestType}";
@@ -102,30 +130,40 @@ namespace CMS.BA.Controllers
             }
         }
 
+        public class MoMoResponseDto
+        {
+            public object resultCode { get; set; }
+            public string orderId { get; set; }
+            public object amount { get; set; }
+            public string transId { get; set; }
+        }
+
         [HttpPost("MoMoReturn")]
-        public IActionResult MoMoReturn([FromBody] JObject response)
+        public IActionResult MoMoReturn([FromBody] MoMoResponseDto response)
         {
             try
             {
                 // MoMo sends result via IPN
-                string resultCode = response.GetValue("resultCode")?.ToString();
-                string extraData = response.GetValue("extraData")?.ToString(); // This contains original OrderId
+                string resultCodeStr = response.resultCode?.ToString();
+                string receivedOrderId = response.orderId;
                 
-                if (resultCode == "0") // Success
+                if (!string.IsNullOrEmpty(receivedOrderId))
                 {
-                    // Lấy orderId từ chuỗi "8_63851..."
-                    string receivedOrderId = response.GetValue("orderId")?.ToString();
-                    if (!string.IsNullOrEmpty(receivedOrderId))
+                    string idPart = receivedOrderId.Split('_')[0];
+                    if (int.TryParse(idPart, out int orderId))
                     {
-                        string idPart = receivedOrderId.Split('_')[0];
-                        if (int.TryParse(idPart, out int orderId))
+                        var order = _context.Orders.Find(orderId);
+                        if (order != null && order.Status == 0) // Chỉ xử lý nếu đơn hàng đang ở trạng thái chờ duyệt mới
                         {
-                            var order = _context.Orders.Find(orderId);
-                            if (order != null && order.Status == 0)
+                            if (resultCodeStr == "0") // Thành công
                             {
                                 order.Status = 10; // Đã thanh toán MoMo (Chờ duyệt)
-                                _context.SaveChanges();
                             }
+                            else // Thất bại
+                            {
+                                order.Status = -1; // -1 là Thanh toán thất bại
+                            }
+                            _context.SaveChanges();
                         }
                     }
                 }

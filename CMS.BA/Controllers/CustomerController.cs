@@ -22,8 +22,8 @@ namespace CMS.Backend.Controllers
         //--------------------------------------------------
         public IActionResult Index(string keyword)
         {
-            // Lấy toàn bộ danh sách khách hàng từ Database
-            var customers = _context.Customers.AsQueryable();
+            // Lấy toàn bộ danh sách khách hàng từ Database kèm thông tin Đơn hàng để thống kê
+            var customers = _context.Customers.Include(c => c.Orders).AsQueryable();
 
             // Xử lý tìm kiếm: Nếu người dùng có nhập từ khóa, tiến hành lọc theo Tên hoặc Số điện thoại
             if (!string.IsNullOrEmpty(keyword))
@@ -31,8 +31,8 @@ namespace CMS.Backend.Controllers
                 customers = customers.Where(c => c.FullName.Contains(keyword) || c.Phone.Contains(keyword));
             }
 
-            // Trả về View kèm theo danh sách đã lọc (hoặc toàn bộ nếu không tìm kiếm)
-            return View(customers.ToList());
+            // Sắp xếp ID giảm dần (khách hàng mới nhất lên đầu)
+            return View(customers.OrderByDescending(c => c.Id).ToList());
         }
 
         //--------------------------------------------------

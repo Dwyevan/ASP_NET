@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../components/CartProvider';
-import { formatCurrency } from '../utils/formatters';
+import { useCart } from '../../components/CartProvider';
+import { formatCurrency } from '../../utils/formatters';
 
 const Cart = () => {
     const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();

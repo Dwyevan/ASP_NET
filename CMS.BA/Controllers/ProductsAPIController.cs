@@ -22,6 +22,7 @@ namespace CMS.BA.Controllers
         public IActionResult GetAll()
         {
             var products = _context.Products
+                .Where(p => !p.IsHidden)
                 .Include(p => p.CategoryProduct)
                 .Select(p => new
                 {
@@ -46,8 +47,8 @@ namespace CMS.BA.Controllers
         public IActionResult GetByCategory(int categoryProductId)
         {
             var products = _context.Products
+                .Where(p => p.CategoryProductId == categoryProductId && !p.IsHidden)
                 .Include(p => p.CategoryProduct)
-                .Where(p => p.CategoryProductId == categoryProductId)
                 .Select(p => new
                 {
                     p.Id,
@@ -71,8 +72,8 @@ namespace CMS.BA.Controllers
         public IActionResult GetDetail(int id)
         {
             var product = _context.Products
+                .Where(p => p.Id == id && !p.IsHidden)
                 .Include(p => p.CategoryProduct)
-                .Where(p => p.Id == id)
                 .Select(p => new
                 {
                     p.Id,

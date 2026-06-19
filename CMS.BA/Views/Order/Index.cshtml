@@ -11,7 +11,58 @@
             </h5>
         </div>
 
-        <div class="card-body bg-light border-bottom p-3">
+        <!-- BẢNG ĐIỀU KHIỂN (DASHBOARD) -->
+        <div class="card-body bg-light border-bottom p-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-3 h-100 bg-white" style="border-left: 5px solid #0d6efd !important;">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-bag-check fs-3"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1 fw-bold">Tổng Đơn Hàng</h6>
+                                <h4 class="mb-0 fw-bold text-dark">@ViewBag.TotalOrders</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-3 h-100 bg-white" style="border-left: 5px solid #198754 !important;">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-currency-dollar fs-3"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1 fw-bold">Doanh Thu (Hoàn Tất)</h6>
+                                <h4 class="mb-0 fw-bold text-success">@String.Format("{0:N0} ₫", ViewBag.TotalRevenue)</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-3 h-100 bg-white" style="border-left: 5px solid #ffc107 !important;">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-hourglass-split fs-3"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-1 fw-bold">Chờ Duyệt (Cần Xử Lý)</h6>
+                                <h4 class="mb-0 fw-bold text-warning">@ViewBag.PendingOrders</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body bg-white border-bottom p-3">
             <form asp-action="Index" method="get" class="row g-2 align-items-center">
                 <div class="col-md-5">
                     <div class="input-group">
@@ -26,11 +77,12 @@
                         <option value="1" selected="@(ViewBag.CurrentFilter == 1 ? "selected" : null)">Đang giao (COD)</option>
                         <option value="2" selected="@(ViewBag.CurrentFilter == 2 ? "selected" : null)">Đã xong (COD)</option>
                         <option value="3" selected="@(ViewBag.CurrentFilter == 3 ? "selected" : null)">Đã hủy</option>
-                        <option value="10" selected="@(ViewBag.CurrentFilter == 10 ? "selected" : null)">Chờ duyệt (MoMo)</option>
+                        <option value="10" selected="@(ViewBag.CurrentFilter == 10 ? "selected" : null)">Đã thanh toán (MoMo)</option>
                         <option value="11" selected="@(ViewBag.CurrentFilter == 11 ? "selected" : null)">Đang giao (MoMo)</option>
                         <option value="12" selected="@(ViewBag.CurrentFilter == 12 ? "selected" : null)">Đã xong (MoMo)</option>
                         <option value="13" selected="@(ViewBag.CurrentFilter == 13 ? "selected" : null)">YÊU CẦU HOÀN TIỀN</option>
                         <option value="14" selected="@(ViewBag.CurrentFilter == 14 ? "selected" : null)">Đã hoàn tiền</option>
+                        <option value="-1" selected="@(ViewBag.CurrentFilter == -1 ? "selected" : null)">Thanh toán thất bại</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -92,7 +144,11 @@
                                         }
                                         else if (item.Status == 10)
                                         {
-                                            <span class="badge rounded-pill bg-warning text-dark">Chờ duyệt (MoMo)</span>
+                                            <span class="badge rounded-pill bg-success">Đã thanh toán (MoMo)</span>
+                                        }
+                                        else if (item.Status == -1)
+                                        {
+                                            <span class="badge rounded-pill bg-danger">Thanh toán thất bại</span>
                                         }
                                         else if (item.Status == 11)
                                         {
@@ -110,103 +166,149 @@
                                         {
                                             <span class="badge rounded-pill bg-secondary text-white">Đã hoàn tiền</span>
                                         }
+                                        else if (item.Status == -1)
+                                        {
+                                            <span class="badge rounded-pill bg-danger text-white">Thanh toán thất bại</span>
+                                        }
                                         else
                                         {
                                             <span class="badge rounded-pill bg-secondary">Không rõ</span>
                                         }
                                     </td>
-                                    <td>
-                                        <div class="d-flex gap-2 justify-content-center">
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white shadow-sm" title="Chi tiết">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            
-                                            @if (item.Status == 0) // Đang chờ duyệt COD
-                                            {
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="1" />
-                                                    <button type="submit" class="btn btn-sm btn-warning shadow-sm" title="Duyệt đơn & Giao hàng" onclick="return confirm('Duyệt và chuyển đơn hàng sang trạng thái Đang Giao?');">
-                                                        <i class="bi bi-truck"></i>
-                                                    </button>
-                                                </form>
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="3" />
-                                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Hủy đơn hàng" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
-                                                        <i class="bi bi-x-circle"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (item.Status == 10) // Đang chờ duyệt MoMo
-                                            {
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="11" />
-                                                    <button type="submit" class="btn btn-sm btn-warning shadow-sm" title="Duyệt đơn & Giao hàng" onclick="return confirm('Duyệt và chuyển đơn hàng sang trạng thái Đang Giao?');">
-                                                        <i class="bi bi-truck"></i>
-                                                    </button>
-                                                </form>
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="13" />
-                                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Chuyển sang Yêu cầu hoàn tiền" onclick="return confirm('Hủy đơn và chuyển sang trạng thái Yêu cầu Hoàn tiền?');">
-                                                        <i class="bi bi-x-circle"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (item.Status == 1) // Đang giao COD
-                                            {
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="2" />
-                                                    <button type="submit" class="btn btn-sm btn-success shadow-sm" title="Đánh dấu hoàn tất" onclick="return confirm('Xác nhận đơn hàng này đã giao xong?');">
-                                                        <i class="bi bi-check-circle"></i>
-                                                    </button>
-                                                </form>
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="3" />
-                                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Khách boom hàng (Hủy)" onclick="return confirm('Hủy đơn hàng vì lý do giao thất bại?');">
-                                                        <i class="bi bi-x-circle"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (item.Status == 11) // Đang giao MoMo
-                                            {
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="12" />
-                                                    <button type="submit" class="btn btn-sm btn-success shadow-sm" title="Đánh dấu hoàn tất" onclick="return confirm('Xác nhận đơn hàng này đã giao xong?');">
-                                                        <i class="bi bi-check-circle"></i>
-                                                    </button>
-                                                </form>
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="13" />
-                                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Khách boom hàng (Yêu cầu Hoàn tiền)" onclick="return confirm('Hủy đơn hàng và chờ Hoàn tiền?');">
-                                                        <i class="bi bi-x-circle"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (item.Status == 13) // YÊU CẦU HOÀN TIỀN
-                                            {
-                                                <form asp-action="UpdateStatus" method="post" class="m-0">
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="status" value="14" />
-                                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm fw-bold" title="Xác nhận đã Hoàn tiền" onclick="return confirm('Xác nhận ĐÃ CHUYỂN KHOẢN hoàn tiền cho khách hàng?');">
-                                                        <i class="bi bi-cash-coin"></i> Hoàn
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (item.Status == 2 || item.Status == 12)
-                                            {
-                                                <button class="btn btn-sm btn-secondary shadow-sm" disabled title="Đã hoàn tất"><i class="bi bi-check-all"></i></button>
-                                            }
-                                            else if (item.Status == 3 || item.Status == 14)
-                                            {
-                                                <button class="btn btn-sm btn-secondary shadow-sm" disabled title="Kết thúc quy trình"><i class="bi bi-slash-circle"></i></button>
-                                            }
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle shadow-sm" type="button" id="actionMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-gear"></i> Thao tác
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="actionMenu-@item.Id" style="min-width: 200px;">
+                                                <li>
+                                                    <a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item text-info fw-bold py-2">
+                                                        <i class="bi bi-eye me-2"></i>Xem chi tiết
+                                                    </a>
+                                                </li>
+                                                
+                                                @{
+                                                    var hasActions = false;
+                                                }
+
+                                                @if (item.Status == 0) // Đang chờ duyệt COD
+                                                {
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="1" />
+                                                            <button type="submit" class="dropdown-item text-warning py-2" onclick="return confirm('Duyệt và chuyển đơn hàng sang trạng thái Đang Giao?');">
+                                                                <i class="bi bi-truck me-2"></i>Duyệt & Giao hàng
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="3" />
+                                                            <button type="submit" class="dropdown-item text-danger py-2" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                                                <i class="bi bi-x-circle me-2"></i>Hủy đơn hàng
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    hasActions = true;
+                                                }
+                                                else if (item.Status == 10) // Đang chờ duyệt MoMo
+                                                {
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="11" />
+                                                            <button type="submit" class="dropdown-item text-warning py-2" onclick="return confirm('Duyệt và chuyển đơn hàng sang trạng thái Đang Giao?');">
+                                                                <i class="bi bi-truck me-2"></i>Duyệt & Giao hàng
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="13" />
+                                                            <button type="submit" class="dropdown-item text-danger py-2" onclick="return confirm('Hủy đơn và chuyển sang trạng thái Yêu cầu Hoàn tiền?');">
+                                                                <i class="bi bi-x-circle me-2"></i>Yêu cầu hoàn tiền
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    hasActions = true;
+                                                }
+                                                else if (item.Status == 1) // Đang giao COD
+                                                {
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="2" />
+                                                            <button type="submit" class="dropdown-item text-success py-2" onclick="return confirm('Xác nhận đơn hàng này đã giao xong?');">
+                                                                <i class="bi bi-check-circle me-2"></i>Xác nhận Giao xong
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="3" />
+                                                            <button type="submit" class="dropdown-item text-danger py-2" onclick="return confirm('Hủy đơn hàng vì lý do giao thất bại?');">
+                                                                <i class="bi bi-box-arrow-left me-2"></i>Khách bom hàng
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    hasActions = true;
+                                                }
+                                                else if (item.Status == 11) // Đang giao MoMo
+                                                {
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="12" />
+                                                            <button type="submit" class="dropdown-item text-success py-2" onclick="return confirm('Xác nhận đơn hàng này đã giao xong?');">
+                                                                <i class="bi bi-check-circle me-2"></i>Xác nhận Giao xong
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="13" />
+                                                            <button type="submit" class="dropdown-item text-danger py-2" onclick="return confirm('Hủy đơn hàng và chờ Hoàn tiền?');">
+                                                                <i class="bi bi-box-arrow-left me-2"></i>Khách bom hàng
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    hasActions = true;
+                                                }
+                                                else if (item.Status == 13) // YÊU CẦU HOÀN TIỀN
+                                                {
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form asp-action="UpdateStatus" method="post" class="m-0">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <input type="hidden" name="status" value="14" />
+                                                            <button type="submit" class="dropdown-item text-danger fw-bold py-2 bg-danger bg-opacity-10" onclick="return confirm('Xác nhận ĐÃ CHUYỂN KHOẢN hoàn tiền cho khách hàng?');">
+                                                                <i class="bi bi-cash-coin me-2"></i>Xác nhận Hoàn tiền
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    hasActions = true;
+                                                }
+
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <!-- Nút Xóa (Luôn hiển thị cho Admin) -->
+                                                    <form asp-action="Delete" method="post" class="m-0">
+                                                        <input type="hidden" name="id" value="@item.Id" />
+                                                        <button type="submit" class="dropdown-item text-secondary py-2" onclick="return confirm('CẢNH BÁO: Xóa đơn hàng này sẽ xóa sạch dữ liệu sản phẩm trong đơn. Bạn có chắc chắn?');">
+                                                            <i class="bi bi-trash me-2"></i>Xóa vĩnh viễn
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>

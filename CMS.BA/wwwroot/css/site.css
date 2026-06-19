@@ -1,22 +1,172 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+/* Global Modern Soft UI Styles for Admin Panel */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa; /* Light slate grey */
+    color: #495057;
 }
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: #344767;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+}
+
+.card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+    padding: 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Table Styling */
+.table {
+    color: #67748e;
+    margin-bottom: 0;
+}
+
+.table th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 700;
+    opacity: 0.7;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1rem;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0,0,0,0.01) !important;
+    transform: translateY(-1px);
+    position: relative;
+    z-index: 99;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 0.8em;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-soft-success { background-color: #d1e7dd; color: #0f5132; }
+.badge-soft-warning { background-color: #fff3cd; color: #664d03; }
+.badge-soft-danger { background-color: #f8d7da; color: #842029; }
+.badge-soft-info { background-color: #cff4fc; color: #055160; }
+.badge-soft-primary { background-color: #cfe2ff; color: #084298; }
+.badge-soft-secondary { background-color: #e2e3e5; color: #41464b; }
+
+/* Buttons */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-image: linear-gradient(310deg, #141727 0%, #3A416F 100%);
+    border: none;
+    box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.09), 0 2px 3px -1px rgba(0, 0, 0, 0.07);
+    transform: scale(1.02);
+}
+
+.btn-info {
+    background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%);
+    border: none;
+    color: white;
+}
+.btn-info:hover { color: white; transform: scale(1.02); }
+
+.btn-success {
+    background-image: linear-gradient(310deg, #17ad37 0%, #98ec2d 100%);
+    border: none;
+}
+
+.btn-warning {
+    background-image: linear-gradient(310deg, #f53939 0%, #fbcf33 100%);
+    border: none;
+    color: white;
+}
+.btn-warning:hover { color: white; }
+
+.btn-danger {
+    background-image: linear-gradient(310deg, #ea0606 0%, #ff667c 100%);
+    border: none;
+}
+
+.btn-outline-primary {
+    border-color: #3A416F;
+    color: #3A416F;
+}
+.btn-outline-primary:hover {
+    background-color: #3A416F;
+    color: white;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 0.5rem;
+    border: 1px solid #d2d6da;
+    padding: 0.6rem 0.75rem;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    border-color: #3A416F;
+    box-shadow: 0 0 0 2px rgba(58, 65, 111, 0.2);
+}
+
+/* Image Thumbnails */
+.img-thumbnail-soft {
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+.img-thumbnail-soft:hover {
+    transform: scale(1.05);
+}
+
+/* Glass Effect Utils */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }

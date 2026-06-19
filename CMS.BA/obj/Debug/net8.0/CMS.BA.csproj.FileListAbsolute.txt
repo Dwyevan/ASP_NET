@@ -494,4 +494,7 @@ C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\bin\Debug\net8.
 C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\obj\Debug\net8.0\CMS.BA.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\bin\Debug\net8.0\BCrypt-Net-Next.dll
+C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\bin\Debug\net8.0\CancelReasons.json
 C:\Users\LIGION\Downloads\DuyCMS_Solution\DuyCMS_Solution\CMS.BA\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

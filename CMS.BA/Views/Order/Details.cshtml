@@ -1,255 +1,269 @@
 @model Cms.data.Entities.Order
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = $"Hóa đơn #{Model.Id}";
 }
 
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-uppercase mb-0 text-primary">
-            <i class="bi bi-receipt me-2"></i>CHI TIẾT ĐƠN HÀNG #@Model.Id
-        </h4>
-        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill shadow-sm">
-            <i class="bi bi-arrow-left me-1"></i> Quay lại
-        </a>
+<style type="text/css" media="print">
+    body * { visibility: hidden; }
+    .invoice-container, .invoice-container * { visibility: visible; }
+    .invoice-container { position: absolute; left: 0; top: 0; width: 100%; }
+    .no-print, form, .btn, .card-header i { display: none !important; }
+    .card { border: none !important; box-shadow: none !important; }
+</style>
+
+<div class="row">
+    <!-- Header -->
+    <div class="col-12 mb-4 d-flex justify-content-between align-items-center no-print">
+        <div>
+            <h4 class="mb-0 fw-bold text-dark">Chi tiết Hóa đơn</h4>
+            <p class="text-sm text-secondary mb-0">Hóa đơn điện tử nội bộ</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                <i class="bi bi-arrow-left me-1"></i> Trở về
+            </a>
+            <button onclick="window.print()" class="btn btn-info shadow-sm text-white">
+                <i class="bi bi-printer me-1"></i> In / Xuất PDF
+            </button>
+        </div>
     </div>
 
-    <div class="row">
-        <!-- Cột trái: Thông tin sản phẩm -->
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-header bg-white p-3 border-bottom-0">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-box-seam me-2"></i>Danh sách sản phẩm</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light text-center">
-                                <tr>
-                                    <th style="width: 100px;">Hình ảnh</th>
-                                    <th class="text-start">Sản phẩm</th>
-                                    <th style="width: 120px;">Đơn giá</th>
-                                    <th style="width: 80px;">SL</th>
-                                    <th style="width: 150px;" class="text-end pe-4">Thành tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.OrderDetails != null && Model.OrderDetails.Any())
-                                {
-                                    decimal totalSum = 0;
-                                    foreach (var item in Model.OrderDetails)
-                                    {
-                                        var productTotal = item.UnitPrice * item.Quantity;
-                                        totalSum += productTotal;
-                                        <tr>
-                                            <td class="text-center p-2">
-                                                @if (item.Product != null && !string.IsNullOrEmpty(item.Product.ImageUrl))
-                                                {
-                                                    <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="img-thumbnail border-0 shadow-sm rounded" style="width: 60px; height: 60px; object-fit: cover;" />
-                                                }
-                                                else
-                                                {
-                                                    <img src="/images/wine-placeholder.png" alt="No image" class="img-thumbnail border-0 shadow-sm rounded" style="width: 60px; height: 60px; object-fit: cover;" />
-                                                }
-                                            </td>
-                                            <td class="text-start fw-bold text-dark">
-                                                @(item.Product != null ? item.Product.Name : "Sản phẩm không tồn tại")
-                                            </td>
-                                            <td class="text-center text-muted">
-                                                @String.Format("{0:N0} ₫", item.UnitPrice)
-                                            </td>
-                                            <td class="text-center fw-bold">
-                                                x @item.Quantity
-                                            </td>
-                                            <td class="text-end pe-4 fw-bold text-danger">
-                                                @String.Format("{0:N0} ₫", productTotal)
-                                            </td>
-                                        </tr>
-                                    }
-                                    <tr class="table-light">
-                                        <td colspan="4" class="text-end fw-bold fs-5">TỔNG CỘNG:</td>
-                                        <td class="text-end pe-4 fw-bold fs-5 text-danger">
-                                            @String.Format("{0:N0} ₫", totalSum)
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-5">
-                                            Không có sản phẩm nào!
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+    <!-- Cột trái: E-Invoice -->
+    <div class="col-lg-8 mb-4 invoice-container">
+        <div class="card border-0 shadow-sm p-4 h-100">
+            <!-- Invoice Header -->
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-4 mb-4">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary text-white rounded p-3 d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 60px; height: 60px; background: linear-gradient(310deg, #141727 0%, #3A416F 100%) !important;">
+                        <i class="bi bi-receipt fs-3"></i>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-1" style="color: #3A416F; letter-spacing: -1px;">ROYAL WINE</h4>
+                        <p class="text-secondary text-sm mb-0">Hóa đơn bán lẻ / Hóa đơn điện tử</p>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Cột phải: Thông tin Khách hàng & Trạng thái -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm border-0 rounded-3 mb-4">
-                <div class="card-header bg-white p-3 border-bottom-0">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-person-lines-fill me-2"></i>Thông tin Khách hàng</h5>
+                <div class="text-end">
+                    <h5 class="fw-bold text-dark mb-1">HÓA ĐƠN #@Model.Id</h5>
+                    <p class="text-secondary text-sm mb-0">Ngày: @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
                 </div>
-                <div class="card-body bg-light">
+            </div>
+
+            <!-- Khách hàng -->
+            <div class="row mb-5">
+                <div class="col-sm-6">
+                    <h6 class="text-uppercase text-secondary text-xs fw-bolder mb-3">Thông tin khách hàng:</h6>
                     @if (Model.Customer != null)
                     {
-                        <p class="mb-2"><i class="bi bi-person-fill text-muted me-2"></i><strong>@Model.Customer.FullName</strong></p>
-                        <p class="mb-2"><i class="bi bi-telephone-fill text-muted me-2"></i><a href="tel:@Model.Customer.Phone" class="text-decoration-none">@Model.Customer.Phone</a></p>
-                        <p class="mb-2"><i class="bi bi-envelope-fill text-muted me-2"></i><a href="mailto:@Model.Customer.Email" class="text-decoration-none">@Model.Customer.Email</a></p>
-                        <p class="mb-0 mt-3 border-top pt-3"><i class="bi bi-geo-alt-fill text-danger me-2"></i><strong>Địa chỉ giao hàng:</strong><br />@Model.Customer.Address</p>
+                        <h6 class="text-dark fw-bold mb-1">@Model.Customer.FullName</h6>
+                        <div class="text-secondary text-sm">
+                            <span class="d-block mb-1"><i class="bi bi-telephone me-2"></i>@Model.Customer.Phone</span>
+                            <span class="d-block mb-1"><i class="bi bi-envelope me-2"></i>@Model.Customer.Email</span>
+                            <span class="d-block"><i class="bi bi-geo-alt me-2 text-danger"></i>@Model.Customer.Address</span>
+                        </div>
                     }
                     else
                     {
-                        <p class="text-muted fst-italic">Khách vãng lai (Ẩn danh)</p>
+                        <span class="text-muted fst-italic">Khách vãng lai (Ẩn danh)</span>
+                    }
+                </div>
+                <div class="col-sm-6 text-sm-end mt-4 mt-sm-0">
+                    <h6 class="text-uppercase text-secondary text-xs fw-bolder mb-3">Phương thức thanh toán:</h6>
+                    @if(Model.Status == 10 || Model.Status == 11 || Model.Status == 12 || Model.Status == 13 || Model.Status == 14)
+                    {
+                        <h6 class="text-dark fw-bold mb-1 d-flex align-items-center justify-content-sm-end">
+                            <span class="badge bg-pink text-white me-2" style="background-color: #a50064;"><i class="bi bi-wallet2 me-1"></i> Ví MoMo</span>
+                        </h6>
+                    }
+                    else
+                    {
+                        <h6 class="text-dark fw-bold mb-1 d-flex align-items-center justify-content-sm-end">
+                            <span class="badge bg-warning text-dark me-2"><i class="bi bi-cash me-1"></i> Thanh toán khi nhận hàng (COD)</span>
+                        </h6>
                     }
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-header bg-white p-3 border-bottom-0">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-info-circle-fill me-2"></i>Tình trạng đơn hàng</h5>
-                </div>
-                <div class="card-body">
-                    @if (!string.IsNullOrEmpty(ViewBag.CancelReason as string))
-                    {
-                        <div class="alert alert-danger shadow-sm border-danger p-3 mb-4">
-                            <h6 class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill me-2"></i>Lý do khách hàng Hủy:</h6>
-                            <p class="mb-0 fs-6 fst-italic">"@ViewBag.CancelReason"</p>
+            <!-- Bảng sản phẩm -->
+            <div class="table-responsive">
+                <table class="table align-items-center mb-0 border-top">
+                    <thead>
+                        <tr>
+                            <th class="text-uppercase text-secondary text-xxs fw-bolder opacity-7 ps-2">Sản phẩm</th>
+                            <th class="text-uppercase text-secondary text-xxs fw-bolder opacity-7 ps-2">Đơn giá</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs fw-bolder opacity-7">SL</th>
+                            <th class="text-end text-uppercase text-secondary text-xxs fw-bolder opacity-7 pe-2">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                        {
+                            decimal totalSum = 0;
+                            foreach (var item in Model.OrderDetails)
+                            {
+                                var productTotal = item.UnitPrice * item.Quantity;
+                                totalSum += productTotal;
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                                <img src="@(item.Product?.ImageUrl ?? "/images/wine-placeholder.png")" class="avatar avatar-sm me-3 img-thumbnail-soft" style="width:40px; height:40px; object-fit:cover;" alt="@item.Product?.Name">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">@(item.Product?.Name ?? "Sản phẩm đã xóa")</h6>
+                                                <p class="text-xs text-secondary mb-0">ID: @item.ProductId</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">@String.Format("{0:N0} ₫", item.UnitPrice)</p>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="badge badge-sm bg-gradient-secondary text-dark" style="background-color: #e9ecef;">@item.Quantity</span>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <span class="text-sm font-weight-bold text-dark pe-2">@String.Format("{0:N0} ₫", productTotal)</span>
+                                    </td>
+                                </tr>
+                            }
+                            <!-- Dòng Tổng -->
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="align-middle text-center text-sm fw-bolder text-dark">TỔNG CỘNG</td>
+                                <td class="align-middle text-end">
+                                    <span class="text-lg fw-bolder text-danger pe-2">@String.Format("{0:N0} ₫", totalSum)</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="text-center mt-5 mb-2 text-secondary text-sm">
+                <i>Cảm ơn quý khách đã mua sắm tại Royal Wine!</i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Control Panel -->
+    <div class="col-lg-4 mb-4 no-print">
+        
+        <!-- Timeline Trạng Thái -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 pb-0 p-4">
+                <h6 class="text-uppercase text-secondary text-xs fw-bolder"><i class="bi bi-clock-history me-2"></i>Tiến trình đơn hàng</h6>
+            </div>
+            <div class="card-body p-4 pt-2">
+                @if (!string.IsNullOrEmpty(ViewBag.CancelReason as string))
+                {
+                    <div class="alert alert-danger shadow-sm border-0 mb-4 text-white d-flex" style="background-image: linear-gradient(310deg, #ea0606 0%, #ff667c 100%);">
+                        <i class="bi bi-exclamation-triangle-fill fs-4 me-3 mt-1"></i>
+                        <div>
+                            <h6 class="text-white mb-1">Khách hàng Hủy:</h6>
+                            <p class="mb-0 text-sm fst-italic">"@ViewBag.CancelReason"</p>
                         </div>
+                    </div>
+                }
+
+                @{
+                    var statusColor = "secondary";
+                    var statusText = "Không rõ";
+                    var statusIcon = "bi-question";
+                    
+                    if (Model.Status == 0) { statusColor = "warning"; statusText = "Chờ duyệt COD"; statusIcon = "bi-hourglass-split"; }
+                    else if (Model.Status == 10) { statusColor = "success"; statusText = "Đã thanh toán (MoMo)"; statusIcon = "bi-wallet2"; }
+                    else if (Model.Status == 1 || Model.Status == 11) { statusColor = "info"; statusText = "Đang giao hàng"; statusIcon = "bi-truck"; }
+                    else if (Model.Status == 2 || Model.Status == 12) { statusColor = "success"; statusText = "Giao thành công"; statusIcon = "bi-check-circle-fill"; }
+                    else if (Model.Status == 3) { statusColor = "secondary"; statusText = "Đã Hủy"; statusIcon = "bi-x-circle-fill"; }
+                    else if (Model.Status == -1) { statusColor = "danger"; statusText = "Thanh toán thất bại"; statusIcon = "bi-x-octagon"; }
+                    else if (Model.Status == 13) { statusColor = "danger"; statusText = "Yêu cầu Hoàn Tiền"; statusIcon = "bi-cash-coin"; }
+                    else if (Model.Status == 14) { statusColor = "secondary"; statusText = "Đã Hoàn Tiền"; statusIcon = "bi-check-all"; }
+                }
+
+                <div class="d-flex align-items-center p-3 rounded-3 mb-4 border" style="background-color: var(--bs-@(statusColor)-bg-subtle); border-color: rgba(0,0,0,0.05) !important;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-white text-@(statusColor) shadow-sm me-3" style="width: 40px; height: 40px;">
+                        <i class="bi @(statusIcon) fs-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs mb-0 text-secondary">Trạng thái hiện tại</p>
+                        <h5 class="mb-0 text-@(statusColor) fw-bold">@statusText</h5>
+                    </div>
+                </div>
+
+                <hr class="horizontal dark my-3">
+
+                <!-- Các nút tác vụ nhanh -->
+                <h6 class="text-uppercase text-secondary text-xs fw-bolder mb-3">Tác vụ Quản trị viên</h6>
+                <div class="d-grid gap-2">
+                    @if (Model.Status == 0 || Model.Status == 10)
+                    {
+                        <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@(Model.Status == 0 ? 1 : 11)" />
+                            <button type="submit" class="btn btn-warning shadow-sm" onclick="return confirm('Xác nhận duyệt và giao hàng?');">
+                                <i class="bi bi-truck me-2"></i>Duyệt đơn & Giao hàng
+                            </button>
+                        </form>
+                        <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@(Model.Status == 0 ? 3 : 13)" />
+                            <button type="submit" class="btn btn-outline-danger shadow-sm" onclick="return confirm('Hủy đơn hàng này?');">
+                                <i class="bi bi-x-circle me-2"></i>@(Model.Status == 0 ? "Hủy đơn hàng" : "Chuyển Yêu cầu Hoàn tiền")
+                            </button>
+                        </form>
                     }
-
-                    <p class="mb-3"><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</p>
-                    <p class="mb-4">
-                        <strong>Trạng thái:</strong> 
-                        @if (Model.Status == 0)
-                        {
-                            <span class="badge rounded-pill bg-warning text-dark fs-6 ms-2">Chờ duyệt (COD)</span>
-                        }
-                        else if (Model.Status == 1)
-                        {
-                            <span class="badge rounded-pill bg-info text-dark fs-6 ms-2">Đang giao (COD)</span>
-                        }
-                        else if (Model.Status == 2)
-                        {
-                            <span class="badge rounded-pill bg-success fs-6 ms-2">Đã xong (COD)</span>
-                        }
-                        else if (Model.Status == 3)
-                        {
-                            <span class="badge rounded-pill bg-secondary fs-6 ms-2">Đã hủy</span>
-                        }
-                        else if (Model.Status == 10)
-                        {
-                            <span class="badge rounded-pill bg-warning text-dark fs-6 ms-2">Chờ duyệt (MoMo)</span>
-                        }
-                        else if (Model.Status == 11)
-                        {
-                            <span class="badge rounded-pill bg-info text-dark fs-6 ms-2">Đang giao (MoMo)</span>
-                        }
-                        else if (Model.Status == 12)
-                        {
-                            <span class="badge rounded-pill bg-success fs-6 ms-2">Đã xong (MoMo)</span>
-                        }
-                        else if (Model.Status == 13)
-                        {
-                            <span class="badge rounded-pill bg-danger fw-bold border border-danger shadow-sm fs-6 ms-2" style="animation: pulse 1.5s infinite;">YÊU CẦU HOÀN TIỀN</span>
-                        }
-                        else if (Model.Status == 14)
-                        {
-                            <span class="badge rounded-pill bg-secondary text-white fs-6 ms-2">Đã hoàn tiền</span>
-                        }
-                    </p>
-
-                    <!-- Thao tác thay đổi trạng thái ngay trong trang chi tiết -->
-                    <div class="d-grid gap-2">
-                        @if (Model.Status == 0) // Chờ duyệt COD
-                        {
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="1" />
-                                <button type="submit" class="btn btn-warning fw-bold text-dark mb-2" onclick="return confirm('Xác nhận duyệt và giao hàng?');">
-                                    <i class="bi bi-truck me-2"></i>Duyệt đơn & Giao hàng
-                                </button>
-                            </form>
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="3" />
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Xác nhận hủy đơn hàng này?');">
-                                    <i class="bi bi-x-circle me-2"></i>Hủy đơn hàng
-                                </button>
-                            </form>
-                        }
-                        else if (Model.Status == 10) // Chờ duyệt MoMo
-                        {
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="11" />
-                                <button type="submit" class="btn btn-warning fw-bold text-dark mb-2" onclick="return confirm('Xác nhận duyệt và giao hàng?');">
-                                    <i class="bi bi-truck me-2"></i>Duyệt đơn & Giao hàng
-                                </button>
-                            </form>
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="13" />
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Hủy đơn và chuyển sang Yêu cầu hoàn tiền?');">
-                                    <i class="bi bi-x-circle me-2"></i>Chuyển Yêu cầu Hoàn tiền
-                                </button>
-                            </form>
-                        }
-                        else if (Model.Status == 1) // Đang giao COD
-                        {
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="2" />
-                                <button type="submit" class="btn btn-success fw-bold mb-2" onclick="return confirm('Xác nhận khách đã nhận hàng thành công?');">
-                                    <i class="bi bi-check-circle me-2"></i>Xác nhận Giao xong
-                                </button>
-                            </form>
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="3" />
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Xác nhận hủy đơn vì giao hàng thất bại?');">
-                                    <i class="bi bi-x-circle me-2"></i>Khách bom hàng (Hủy)
-                                </button>
-                            </form>
-                        }
-                        else if (Model.Status == 11) // Đang giao MoMo
-                        {
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="12" />
-                                <button type="submit" class="btn btn-success fw-bold mb-2" onclick="return confirm('Xác nhận khách đã nhận hàng thành công?');">
-                                    <i class="bi bi-check-circle me-2"></i>Xác nhận Giao xong
-                                </button>
-                            </form>
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="13" />
-                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Xác nhận hủy đơn vì giao hàng thất bại (Yêu cầu hoàn tiền)?');">
-                                    <i class="bi bi-x-circle me-2"></i>Khách bom hàng (Chờ Hoàn Tiền)
-                                </button>
-                            </form>
-                        }
-                        else if (Model.Status == 13) // YÊU CẦU HOÀN TIỀN
-                        {
-                            <div class="alert alert-danger p-2 mb-3 text-center" style="font-size: 0.9rem;">
-                                Khách hàng yêu cầu hoàn tiền cho đơn đã thanh toán MoMo. Vui lòng chuyển khoản lại cho khách và bấm nút Xác nhận bên dưới.
-                            </div>
-                            <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <input type="hidden" name="status" value="14" />
-                                <button type="submit" class="btn btn-danger fw-bold shadow-sm" onclick="return confirm('Bạn XÁC NHẬN ĐÃ CHUYỂN KHOẢN hoàn tiền lại cho khách hàng?');">
-                                    <i class="bi bi-cash-coin me-2"></i>Xác nhận Đã Hoàn Tiền
-                                </button>
-                            </form>
-                        }
-                    </div>
-
-                    </div>
+                    else if (Model.Status == 1 || Model.Status == 11)
+                    {
+                        <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@(Model.Status == 1 ? 2 : 12)" />
+                            <button type="submit" class="btn btn-success shadow-sm" onclick="return confirm('Xác nhận khách đã nhận hàng thành công?');">
+                                <i class="bi bi-check-circle-fill me-2"></i>Đã giao xong
+                            </button>
+                        </form>
+                        <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@(Model.Status == 1 ? 3 : 13)" />
+                            <button type="submit" class="btn btn-outline-danger shadow-sm" onclick="return confirm('Khách không nhận hàng?');">
+                                <i class="bi bi-box-arrow-left me-2"></i>Khách bom hàng (Hủy)
+                            </button>
+                        </form>
+                    }
+                    else if (Model.Status == 13)
+                    {
+                        <div class="alert bg-gradient-danger text-white border-0 text-sm mb-3">
+                            <i class="bi bi-info-circle-fill me-1"></i> Khách yêu cầu hoàn tiền MoMo.
+                        </div>
+                        <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="14" />
+                            <button type="submit" class="btn btn-danger shadow-sm" onclick="return confirm('Xác nhận ĐÃ CHUYỂN KHOẢN hoàn tiền?');">
+                                <i class="bi bi-cash-coin me-2"></i>Xác nhận Đã Hoàn Tiền
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary disabled" disabled>Không có tác vụ khả dụng</button>
+                    }
                 </div>
             </div>
         </div>
+
+        <!-- Vùng Đỏ -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 text-center">
+                <i class="bi bi-shield-exclamation text-danger fs-1 mb-2"></i>
+                <h6 class="text-danger fw-bold">Vùng Cảnh Báo</h6>
+                <p class="text-xs text-secondary mb-3">Hành động này sẽ xóa vĩnh viễn đơn hàng khỏi hệ thống, không thể khôi phục.</p>
+                <form asp-action="Delete" method="post" class="m-0 d-grid">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-outline-danger shadow-sm" onclick="return confirm('CẢNH BÁO: XÓA VĨNH VIỄN đơn hàng này?');">
+                        <i class="bi bi-trash me-2"></i>Xóa Đơn Hàng
+                    </button>
+                </form>
+            </div>
+        </div>
+        
     </div>
 </div>

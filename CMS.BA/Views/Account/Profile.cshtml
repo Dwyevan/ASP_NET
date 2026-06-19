@@ -1,0 +1,142 @@
+@model Cms.data.Entities.User
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    
+    // Tạo avatar tự động từ chữ cái đầu tiên của FullName hoặc Username
+    var displayName = !string.IsNullOrEmpty(Model.FullName) ? Model.FullName : Model.Username;
+    var avatarChar = displayName.Substring(0, 1).ToUpper();
+    var roleName = Model.Role ?? "User";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Cột trái: Thông tin tổng quan -->
+        <div class="col-lg-4 col-md-5 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+                <div class="card-body text-center p-5">
+                    <div class="avatar-lg bg-primary-subtle text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4 shadow-sm" style="width: 120px; height: 120px; font-size: 3rem;">
+                        @avatarChar
+                    </div>
+                    <h4 class="fw-bold text-dark mb-1">@displayName</h4>
+                    <p class="text-muted mb-3">@Model.Username</p>
+                    
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-4 py-2 fs-6 mb-4">
+                        <i class="bi bi-shield-check me-1"></i> @roleName
+                    </span>
+
+                    <hr class="opacity-25 my-4" />
+                    
+                    <div class="text-start">
+                        <h6 class="fw-bold text-uppercase text-secondary mb-3" style="font-size: 0.85rem; letter-spacing: 1px;">Phân quyền chức năng</h6>
+                        <ul class="list-unstyled text-muted small" style="line-height: 1.8;">
+                            @if (roleName == "Admin")
+                            {
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Toàn quyền quản trị hệ thống</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Quản lý Sản phẩm & Đơn hàng</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Quản lý Bài viết & Danh mục</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Quản lý Tài khoản & Khách hàng</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Theo dõi báo cáo thống kê</li>
+                            }
+                            else
+                            {
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Quyền truy cập giới hạn</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Quản lý nội dung cơ bản</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Form cập nhật -->
+        <div class="col-lg-8 col-md-7 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-white p-4 border-bottom-0">
+                    <ul class="nav nav-pills nav-fill gap-2 p-1 small bg-light rounded-pill" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active rounded-pill fw-bold" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="true">
+                                <i class="bi bi-person-lines-fill me-2"></i>Thông tin cá nhân
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill fw-bold" id="pills-security-tab" data-bs-toggle="pill" data-bs-target="#pills-security" type="button" role="tab" aria-controls="pills-security" aria-selected="false">
+                                <i class="bi bi-shield-lock-fill me-2"></i>Bảo mật & Mật khẩu
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-body p-4 pt-0">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success border-0 shadow-sm d-flex align-items-center rounded-3 mb-4" role="alert">
+                            <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+                            <div>@TempData["SuccessMessage"]</div>
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center rounded-3 mb-4" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                            <div>@TempData["ErrorMessage"]</div>
+                        </div>
+                    }
+
+                    <div class="tab-content" id="pills-tabContent">
+                        <!-- Tab Thông tin cá nhân -->
+                        <div class="tab-pane fade show active" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+                            <form asp-action="UpdateProfile" method="post">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">Tên đăng nhập (Email)</label>
+                                    <input type="text" class="form-control bg-light" value="@Model.Username" disabled readonly />
+                                    <div class="form-text text-muted"><i class="bi bi-info-circle me-1"></i> Tên đăng nhập là định danh gốc và không thể thay đổi.</div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">Họ và tên hiển thị</label>
+                                    <input type="text" name="fullName" class="form-control" value="@Model.FullName" placeholder="Nhập họ và tên..." required />
+                                </div>
+                                
+                                <div class="d-flex justify-content-end mt-5">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-save me-2"></i> Lưu thay đổi
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab Đổi mật khẩu -->
+                        <div class="tab-pane fade" id="pills-security" role="tabpanel" aria-labelledby="pills-security-tab" tabindex="0">
+                            <form asp-action="ChangePassword" method="post">
+                                <div class="alert alert-warning bg-warning bg-opacity-10 border-warning border-opacity-25 rounded-3 mb-4 text-dark">
+                                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                                    Bạn nên sử dụng mật khẩu mạnh bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt để đảm bảo an toàn cho hệ thống.
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">Mật khẩu hiện tại</label>
+                                    <input type="password" name="oldPassword" class="form-control" placeholder="Nhập mật khẩu cũ..." required />
+                                </div>
+                                <hr class="opacity-10 my-4" />
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">Mật khẩu mới</label>
+                                    <input type="password" name="newPassword" class="form-control" placeholder="Nhập mật khẩu mới..." required />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-dark">Xác nhận mật khẩu mới</label>
+                                    <input type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu mới..." required />
+                                </div>
+                                
+                                <div class="d-flex justify-content-end mt-5">
+                                    <button type="submit" class="btn btn-danger rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-key-fill me-2"></i> Đổi mật khẩu
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

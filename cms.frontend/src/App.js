@@ -16,16 +16,17 @@ import Toast from './components/Toast';
 import ScrollToTop from './components/ScrollToTop';
 
 // Pages
-import Home from './pages/Home';
-import Shop from './pages/Shop';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-import Blog from './pages/Blog';
-import BlogDetail from './pages/BlogDetail';
+import Home from './pages/home';
+import Shop from './pages/shop';
+import ProductDetail from './pages/product-detail';
+import Cart from './pages/cart';
+import Checkout from './pages/checkout';
+import Blog from './pages/blog';
+import BlogDetail from './pages/blog/BlogDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import PaymentResult from './pages/PaymentResult';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/payment-result" element={<PaymentResult />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

@@ -6,6 +6,9 @@ const orderService = {
     },
     createMoMoPayment: (paymentData) => {
         return axiosClient.post('/Payment/MoMo', paymentData);
+    },
+    mockMoMoReturn: (returnData) => {
+        return axiosClient.post('/Payment/MoMoReturn', returnData);
     }
 };
 

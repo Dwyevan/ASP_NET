@@ -35,13 +35,19 @@ namespace CMS.BA.Controllers
             // 3. Đếm tổng số lượng Khách hàng
             ViewBag.TotalCustomers = _context.Customers.Count();
 
-            // 4. Tính tổng doanh thu (Cộng dồn cột TotalAmount trong bảng Orders)
-            ViewBag.TotalRevenue = _context.Orders.Any()
-                ? _context.Orders.Sum(o => o.TotalAmount)
-                : 0;
+            // 4. Tính tổng doanh thu (Chỉ tính đơn đã hoàn tất hoặc đã thanh toán MoMo)
+            ViewBag.TotalRevenue = _context.Orders
+                .Where(o => o.Status == 2 || o.Status == 10 || o.Status == 11 || o.Status == 12)
+                .Sum(o => (decimal?)o.TotalAmount) ?? 0;
 
             // 5. Lấy 5 đơn hàng mới nhất
             ViewBag.RecentOrders = _context.Orders.Include(o => o.Customer).OrderByDescending(o => o.OrderDate).Take(5).ToList();
+
+            // 6. Số đơn hàng chờ duyệt (Cả COD và MoMo)
+            ViewBag.PendingOrdersCount = _context.Orders.Count(o => o.Status == 0 || o.Status == 10);
+
+            // 7. Lấy 5 sản phẩm mới nhất
+            ViewBag.RecentProducts = _context.Products.OrderByDescending(p => p.Id).Take(5).ToList();
 
             return View();
         }

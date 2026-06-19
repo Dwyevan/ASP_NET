@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CMS.BA.Controllers
 {
@@ -38,9 +41,16 @@ namespace CMS.BA.Controllers
             _context = context;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         public IActionResult CreateOrder([FromBody] OrderRequest request)
         {
+            // Xác thực IDOR: Chỉ cho phép tạo đơn hàng cho chính mình
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int tokenUserId) || tokenUserId != request.CustomerId)
+            {
+                return Unauthorized(new { message = "Bạn không có quyền đặt hàng cho tài khoản này" });
+            }
             if (request.Cart == null || !request.Cart.Any())
             {
                 return BadRequest(new { message = "Giỏ hàng trống" });
@@ -110,9 +120,16 @@ namespace CMS.BA.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("customer/{customerId}")]
         public IActionResult GetHistoryByCustomer(int customerId)
         {
+            // Xác thực IDOR: Chỉ cho phép xem đơn hàng của chính mình
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int tokenUserId) || tokenUserId != customerId)
+            {
+                return Unauthorized(new { message = "Bạn không có quyền xem lịch sử đơn hàng này" });
+            }
             var history = _context.Orders
                 .Where(o => o.CustomerId == customerId)
                 .OrderByDescending(o => o.OrderDate)
@@ -136,6 +153,7 @@ namespace CMS.BA.Controllers
             return Ok(history);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("cancel/{id}")]
         public IActionResult CancelOrder(int id, [FromBody] CancelRequest cancelRequest)
         {
@@ -143,6 +161,13 @@ namespace CMS.BA.Controllers
             if (order == null)
             {
                 return NotFound(new { message = "Không tìm thấy đơn hàng" });
+            }
+
+            // Xác thực IDOR: Chỉ cho phép người tạo đơn hàng được hủy
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int tokenUserId) || tokenUserId != order.CustomerId)
+            {
+                return Unauthorized(new { message = "Bạn không có quyền hủy đơn hàng này" });
             }
 
             int finalStatus = order.Status;

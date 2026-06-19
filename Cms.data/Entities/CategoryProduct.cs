@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Cms.data.Entities
 {
@@ -7,6 +7,7 @@ namespace Cms.data.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string ImageUrl { get; set; }
 
         // Quan hệ: Một danh mục có nhiều sản phẩm
         public virtual ICollection<Product> Products { get; set; }

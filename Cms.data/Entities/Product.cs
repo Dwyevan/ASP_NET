@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cms.data.Entities
@@ -66,6 +66,12 @@ namespace Cms.data.Entities
             get;
             set;
         }
+
+        public bool IsHidden 
+        { 
+            get; 
+            set; 
+        } = false;
 
         //---------------------------------
         // FOREIGN KEY

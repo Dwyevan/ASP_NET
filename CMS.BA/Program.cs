@@ -1,11 +1,15 @@
 using Cms.data;
 using CMS.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR(); // Kích hoạt SignalR cho real-time
 
 // 1. BỔ SUNG DÒNG NÀY: Đăng ký dịch vụ Session vào hệ thống (Phải đặt trước builder.Build)
 builder.Services.AddSession();
@@ -15,13 +19,30 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
-// 1. Thêm cấu hình AddAuthentication
-builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+// 1. Thêm cấu hình AddAuthentication cho Cookie (Admin) và JWT (API)
+var jwtSecretKey = builder.Configuration["Jwt:Key"] ?? "Duylution_Secret_Key_For_JWT_Authentication_12345!@#";
+
+builder.Services.AddAuthentication(options => {
+    // Để mặc định là Cookie để không làm vỡ Admin UI
+    options.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/PageNotFound";
+})
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.LoginPath = "/Account/Login";
-        options.AccessDeniedPath = "/Account/PageNotFound";
-    });
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecretKey)),
+        ValidateIssuer = false, // Trong thực tế nên để true và config
+        ValidateAudience = false
+    };
+});
 
 // Thêm cấu hình CORS cho Web API (cho phép React Frontend gọi API)
 builder.Services.AddCors(options => {
@@ -77,5 +98,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
+
+app.MapHub<CMS.BA.Hubs.AdminHub>("/adminHub"); // Định tuyến tới SignalR Hub
 
 app.Run();
