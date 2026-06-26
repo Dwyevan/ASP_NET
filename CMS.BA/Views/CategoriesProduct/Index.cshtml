@@ -20,6 +20,7 @@
                     <thead class="table-light text-center">
                         <tr>
                             <th style="width: 80px;">ID</th>
+                            <th style="width: 120px;">Hình ảnh</th>
                             <th class="text-start">Tên danh mục</th>
                             <th class="text-start">Mô tả</th>
                             <th style="width: 150px;">Thao tác</th>
@@ -31,10 +32,22 @@
                             foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="text-center fw-bold text-secondary">#@item.Id</td>
-                                    <td class="text-start fw-bold text-dark">@item.Name</td>
-                                    <td class="text-start text-muted">@item.Description</td>
-                                    <td class="text-center">
+                                    <td class="text-center fw-bold text-secondary align-middle">#@item.Id</td>
+                                    <td class="text-center align-middle">
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" alt="@item.Name" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light d-flex align-items-center justify-content-center text-muted border" style="width: 80px; height: 80px; border-radius: 8px;">
+                                                <i class="bi bi-image fs-3"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="text-start fw-bold text-dark align-middle">@item.Name</td>
+                                    <td class="text-start text-muted align-middle">@item.Description</td>
+                                    <td class="text-center align-middle">
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-secondary dropdown-toggle shadow-sm" type="button" id="actionMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="bi bi-gear"></i> Thao tác
@@ -60,7 +73,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-5">
+                                <td colspan="5" class="text-center text-muted py-5">
                                     <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
                                     <h5>Chưa có danh mục sản phẩm nào!</h5>
                                 </td>

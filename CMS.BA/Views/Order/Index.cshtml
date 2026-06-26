@@ -144,7 +144,15 @@
                                         }
                                         else if (item.Status == 10)
                                         {
-                                            <span class="badge rounded-pill bg-success">Đã thanh toán (MoMo)</span>
+                                            <span class="badge rounded-pill bg-success">Đã TT (Ví MoMo)</span>
+                                        }
+                                        else if (item.Status == 101)
+                                        {
+                                            <span class="badge rounded-pill bg-success">Đã TT (Thẻ ATM)</span>
+                                        }
+                                        else if (item.Status == 102)
+                                        {
+                                            <span class="badge rounded-pill bg-success">Đã TT (Thẻ Visa)</span>
                                         }
                                         else if (item.Status == -1)
                                         {
@@ -165,10 +173,6 @@
                                         else if (item.Status == 14)
                                         {
                                             <span class="badge rounded-pill bg-secondary text-white">Đã hoàn tiền</span>
-                                        }
-                                        else if (item.Status == -1)
-                                        {
-                                            <span class="badge rounded-pill bg-danger text-white">Thanh toán thất bại</span>
                                         }
                                         else
                                         {
@@ -214,7 +218,7 @@
                                                     </li>
                                                     hasActions = true;
                                                 }
-                                                else if (item.Status == 10) // Đang chờ duyệt MoMo
+                                                else if (item.Status == 10 || item.Status == 101 || item.Status == 102) // Đang chờ duyệt MoMo
                                                 {
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>

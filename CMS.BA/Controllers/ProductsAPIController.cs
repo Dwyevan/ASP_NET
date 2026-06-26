@@ -19,11 +19,48 @@ namespace CMS.BA.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(
+            [FromQuery] int? categoryProductId = null,
+            [FromQuery] decimal? minPrice = null,
+            [FromQuery] decimal? maxPrice = null,
+            [FromQuery] string keyword = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 12)
         {
-            var products = _context.Products
+            var query = _context.Products
                 .Where(p => !p.IsHidden)
                 .Include(p => p.CategoryProduct)
+                .AsQueryable();
+
+            // 1. Lọc theo danh mục
+            if (categoryProductId.HasValue && categoryProductId.Value > 0)
+            {
+                query = query.Where(p => p.CategoryProductId == categoryProductId.Value);
+            }
+
+            // 2. Lọc theo giá
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            // 3. Tìm kiếm theo từ khóa
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                var kw = keyword.ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(kw) || p.Description.ToLower().Contains(kw));
+            }
+
+            // 4. Phân trang
+            // Mặc định trả về danh sách trực tiếp (List) để tương thích ngược với Frontend hiện tại
+            var products = query
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(p => new
                 {
                     p.Id,

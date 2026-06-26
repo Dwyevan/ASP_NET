@@ -66,7 +66,9 @@ const Profile = () => {
             case 1: return <span className="badge" style={{ backgroundColor: 'rgba(13, 202, 240, 0.1)', color: '#0dcaf0', border: '1px solid #bee5eb' }}>Đang giao</span>;
             case 2: return <span className="badge" style={{ backgroundColor: 'rgba(25, 135, 84, 0.1)', color: '#198754', border: '1px solid #c3e6cb' }}>Hoàn tất</span>;
             case 3: return <span className="badge" style={{ backgroundColor: 'rgba(108, 117, 125, 0.1)', color: '#6c757d', border: '1px solid #d6d8db' }}>Đã hủy</span>;
-            case 10: return <span className="badge" style={{ backgroundColor: 'rgba(25, 135, 84, 0.1)', color: '#198754', border: '1px solid #c3e6cb' }}>Đã thanh toán (MoMo)</span>;
+            case 10: return <span className="badge" style={{ backgroundColor: 'rgba(165, 0, 100, 0.1)', color: '#a50064', border: '1px solid #f2bad8' }}>Đã thanh toán (Ví MoMo)</span>;
+            case 101: return <span className="badge" style={{ backgroundColor: 'rgba(165, 0, 100, 0.1)', color: '#a50064', border: '1px solid #f2bad8' }}>Đã thanh toán (Thẻ ATM)</span>;
+            case 102: return <span className="badge" style={{ backgroundColor: 'rgba(28, 74, 151, 0.1)', color: '#1c4a97', border: '1px solid #aecdf7' }}>Đã thanh toán (Thẻ Visa)</span>;
             case 11: return <span className="badge" style={{ backgroundColor: 'rgba(13, 202, 240, 0.1)', color: '#0dcaf0', border: '1px solid #bee5eb' }}>Đang giao (Đã thanh toán)</span>;
             case 12: return <span className="badge" style={{ backgroundColor: 'rgba(25, 135, 84, 0.1)', color: '#198754', border: '1px solid #c3e6cb' }}>Hoàn tất (Đã thanh toán)</span>;
             case 13: return <span className="badge" style={{ backgroundColor: 'rgba(220, 53, 69, 0.1)', color: '#dc3545', border: '1px solid #f5c6cb' }}>Yêu cầu Hoàn tiền</span>;
@@ -155,7 +157,7 @@ const Profile = () => {
     );
 
     // Tính toán Thống kê
-    const completedOrders = orders.filter(o => o.Status === 2 || o.status === 2 || o.Status === 12 || o.status === 12 || o.Status === 10 || o.status === 10 || o.Status === 11 || o.status === 11);
+    const completedOrders = orders.filter(o => [2, 10, 11, 12, 101, 102].includes(o.Status ?? o.status));
     const totalSpent = completedOrders.reduce((sum, o) => sum + (o.TotalAmount || o.totalAmount), 0);
     
     let membershipTier = 'Silver Member';
@@ -436,15 +438,18 @@ const Profile = () => {
                                                                         <p className="text-center fst-italic text-muted">Không có chi tiết sản phẩm.</p>
                                                                     ) : (
                                                                         <div className="d-flex flex-column gap-3">
-                                                                            {details.map((detail, idx) => (
+                                                                            {details.map((detail, idx) => {
+                                                                                const isCancelled = detail.IsCancelled || detail.isCancelled;
+                                                                                return (
                                                                                 <div key={idx} className="glass-item-row d-flex align-items-center p-3 rounded-3" style={{ 
-                                                                                    background: '#fff', 
-                                                                                    border: '1px solid rgba(0,0,0,0.05)',
+                                                                                    background: isCancelled ? '#f8f9fa' : '#fff', 
+                                                                                    border: isCancelled ? '1px dashed #dc3545' : '1px solid rgba(0,0,0,0.05)',
                                                                                     transition: 'all 0.2s ease',
-                                                                                    boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+                                                                                    boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
+                                                                                    opacity: isCancelled ? 0.7 : 1
                                                                                 }}>
                                                                                     <div className="rounded-3 d-flex align-items-center justify-content-center overflow-hidden" 
-                                                                                         style={{ width: '80px', height: '80px', background: '#fff', border: '1px solid #eee', padding: '5px' }}>
+                                                                                         style={{ width: '80px', height: '80px', background: '#fff', border: '1px solid #eee', padding: '5px', filter: isCancelled ? 'grayscale(100%)' : 'none' }}>
                                                                                         <img 
                                                                                             src={detail.ImageUrl || detail.imageUrl || '/images/wine-placeholder.png'} 
                                                                                             alt={detail.Name || detail.name} 
@@ -454,7 +459,7 @@ const Profile = () => {
                                                                                     </div>
                                                                                     <div className="ms-4 flex-grow-1">
                                                                                         <Link to={`/product/${detail.ProductId || detail.productId}`} className="text-decoration-none">
-                                                                                            <h6 className="fw-bold mb-2 font-serif text-dark" style={{ fontSize: '1.1rem' }}>
+                                                                                            <h6 className="fw-bold mb-2 font-serif text-dark" style={{ fontSize: '1.1rem', textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                                                                                 {detail.Name || detail.name}
                                                                                             </h6>
                                                                                         </Link>
@@ -463,16 +468,24 @@ const Profile = () => {
                                                                                             <span className="ms-3">x &nbsp; {(detail.UnitPrice || detail.unitPrice).toLocaleString()} đ</span>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div className="fw-bold ms-3 font-serif" style={{ fontSize: '1.2rem', color: 'var(--wine-burgundy)' }}>
+                                                                                    <div className="fw-bold ms-3 font-serif" style={{ fontSize: '1.2rem', color: isCancelled ? '#999' : 'var(--wine-burgundy)', textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                                                                         {((detail.Quantity || detail.quantity) * (detail.UnitPrice || detail.unitPrice)).toLocaleString()} đ
                                                                                     </div>
+                                                                                    {isCancelled && (
+                                                                                        <div className="ms-4 text-end" style={{ minWidth: '120px' }}>
+                                                                                            <span className="badge bg-danger mb-1"><i className="bi bi-x-circle me-1"></i>Đã hủy</span><br/>
+                                                                                            {(detail.RefundAmount || detail.refundAmount) > 0 && (
+                                                                                                <small className="text-danger fw-bold">Hoàn tiền: {(detail.RefundAmount || detail.refundAmount).toLocaleString()} đ</small>
+                                                                                            )}
+                                                                                        </div>
+                                                                                    )}
                                                                                 </div>
-                                                                            ))}
+                                                                            )})}
                                                                         </div>
                                                                     )}
                                                                     
                                                                     {/* Action Buttons */}
-                                                                    {((order.Status === 0 || order.status === 0) || (order.Status === 10 || order.status === 10)) && (
+                                                                    {[0, 10, 101, 102].includes(order.Status ?? order.status) && (
                                                                         <div className="text-end mt-4 pt-3" style={{ borderTop: '1px dashed rgba(0,0,0,0.1)' }}>
                                                                             <button 
                                                                                 onClick={() => openCancelModal(order.Id || order.id)}

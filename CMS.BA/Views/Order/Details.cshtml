@@ -69,10 +69,28 @@
                 </div>
                 <div class="col-sm-6 text-sm-end mt-4 mt-sm-0">
                     <h6 class="text-uppercase text-secondary text-xs fw-bolder mb-3">Phương thức thanh toán:</h6>
-                    @if(Model.Status == 10 || Model.Status == 11 || Model.Status == 12 || Model.Status == 13 || Model.Status == 14)
+                    @if(Model.Status == 10)
                     {
                         <h6 class="text-dark fw-bold mb-1 d-flex align-items-center justify-content-sm-end">
-                            <span class="badge bg-pink text-white me-2" style="background-color: #a50064;"><i class="bi bi-wallet2 me-1"></i> Ví MoMo</span>
+                            <span class="badge text-white me-2" style="background-color: #a50064;"><i class="bi bi-wallet2 me-1"></i> Ví MoMo</span>
+                        </h6>
+                    }
+                    else if(Model.Status == 101)
+                    {
+                        <h6 class="text-dark fw-bold mb-1 d-flex align-items-center justify-content-sm-end">
+                            <span class="badge text-white me-2" style="background-color: #a50064;"><i class="bi bi-credit-card me-1"></i> Thẻ ATM Nội Địa (MoMo)</span>
+                        </h6>
+                    }
+                    else if(Model.Status == 102)
+                    {
+                        <h6 class="text-dark fw-bold mb-1 d-flex align-items-center justify-content-sm-end">
+                            <span class="badge text-white me-2" style="background-color: #1c4a97;"><i class="bi bi-credit-card-2-front me-1"></i> Thẻ Visa/Mastercard (MoMo)</span>
+                        </h6>
+                    }
+                    else if(Model.Status == 11 || Model.Status == 12 || Model.Status == 13 || Model.Status == 14)
+                    {
+                        <h6 class="text-dark fw-bold mb-1 d-flex align-items-center justify-content-sm-end">
+                            <span class="badge text-white me-2" style="background-color: #a50064;"><i class="bi bi-check-circle me-1"></i> Đã thanh toán (MoMo/Thẻ)</span>
                         </h6>
                     }
                     else
@@ -93,6 +111,7 @@
                             <th class="text-uppercase text-secondary text-xxs fw-bolder opacity-7 ps-2">Đơn giá</th>
                             <th class="text-center text-uppercase text-secondary text-xxs fw-bolder opacity-7">SL</th>
                             <th class="text-end text-uppercase text-secondary text-xxs fw-bolder opacity-7 pe-2">Thành tiền</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs fw-bolder opacity-7">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,14 +143,30 @@
                                     <td class="align-middle text-end">
                                         <span class="text-sm font-weight-bold text-dark pe-2">@String.Format("{0:N0} ₫", productTotal)</span>
                                     </td>
+                                    <td class="align-middle text-center">
+                                        @if (Model.Status == 0 || Model.Status == 10 || Model.Status == 101 || Model.Status == 102)
+                                        {
+                                            <form asp-action="RemoveOrderItem" asp-controller="Order" method="post" class="m-0 d-inline">
+                                                <input type="hidden" name="orderId" value="@Model.Id" />
+                                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                                <button type="submit" class="btn btn-link text-danger text-gradient px-3 mb-0" onclick="return confirm('Xác nhận ĐÁNH DẤU BỊ HƯ / HẾT HÀNG và loại bỏ sản phẩm này khỏi đơn?');">
+                                                    <i class="bi bi-trash3-fill me-1"></i> Loại bỏ
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-xs text-secondary">Không khả dụng</span>
+                                        }
+                                    </td>
                                 </tr>
                             }
                             <!-- Dòng Tổng -->
                             <tr>
-                                <td colspan="2"></td>
+                                <td colspan="3"></td>
                                 <td class="align-middle text-center text-sm fw-bolder text-dark">TỔNG CỘNG</td>
-                                <td class="align-middle text-end">
-                                    <span class="text-lg fw-bolder text-danger pe-2">@String.Format("{0:N0} ₫", totalSum)</span>
+                                <td class="align-middle text-end pe-4">
+                                    <span class="text-lg fw-bolder text-danger">@String.Format("{0:N0} ₫", totalSum)</span>
                                 </td>
                             </tr>
                         }
@@ -148,6 +183,31 @@
     <!-- Cột phải: Control Panel -->
     <div class="col-lg-4 mb-4 no-print">
         
+        @if (ViewBag.PartialRefunds != null)
+        {
+            var refunds = ViewBag.PartialRefunds as IEnumerable<CMS.Backend.Services.PartialRefundRecord>;
+            if (refunds != null && refunds.Any())
+            {
+                <div class="card border-0 shadow-sm mb-4" style="background-color: #fff8f8;">
+                    <div class="card-header bg-transparent border-0 pb-0 p-4">
+                        <h6 class="text-uppercase text-danger text-xs fw-bolder"><i class="bi bi-exclamation-octagon-fill me-2"></i>Lịch sử Loại Bỏ SP & Hoàn Tiền</h6>
+                    </div>
+                    <div class="card-body p-4 pt-2">
+                        @foreach(var r in refunds)
+                        {
+                            <div class="alert alert-danger text-dark border-0 shadow-sm mb-2" style="background-color: #ffe5e5;">
+                                <div class="fw-bold text-sm mb-1">@r.ProductName</div>
+                                <div class="text-xs text-muted mb-1"><i class="bi bi-clock me-1"></i> @r.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                                <div class="text-sm">Hoàn tiền Online: <strong class="text-danger">@String.Format("{0:N0} ₫", r.RefundAmount)</strong></div>
+                                <div class="mt-2"><span class="badge bg-danger">@r.Status</span></div>
+                            </div>
+                        }
+                        <p class="text-xs text-muted mt-3 mb-0">* Kế toán sử dụng danh sách này để chuyển khoản hoàn lại phần chênh lệch cho khách (nếu khách đã thanh toán Online).</p>
+                    </div>
+                </div>
+            }
+        }
+
         <!-- Timeline Trạng Thái -->
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white border-0 pb-0 p-4">
@@ -171,7 +231,9 @@
                     var statusIcon = "bi-question";
                     
                     if (Model.Status == 0) { statusColor = "warning"; statusText = "Chờ duyệt COD"; statusIcon = "bi-hourglass-split"; }
-                    else if (Model.Status == 10) { statusColor = "success"; statusText = "Đã thanh toán (MoMo)"; statusIcon = "bi-wallet2"; }
+                    else if (Model.Status == 10) { statusColor = "success"; statusText = "Đã thanh toán (Ví MoMo)"; statusIcon = "bi-wallet2"; }
+                    else if (Model.Status == 101) { statusColor = "success"; statusText = "Đã thanh toán (Thẻ ATM)"; statusIcon = "bi-credit-card"; }
+                    else if (Model.Status == 102) { statusColor = "success"; statusText = "Đã thanh toán (Thẻ Visa)"; statusIcon = "bi-credit-card-2-front"; }
                     else if (Model.Status == 1 || Model.Status == 11) { statusColor = "info"; statusText = "Đang giao hàng"; statusIcon = "bi-truck"; }
                     else if (Model.Status == 2 || Model.Status == 12) { statusColor = "success"; statusText = "Giao thành công"; statusIcon = "bi-check-circle-fill"; }
                     else if (Model.Status == 3) { statusColor = "secondary"; statusText = "Đã Hủy"; statusIcon = "bi-x-circle-fill"; }
@@ -195,7 +257,7 @@
                 <!-- Các nút tác vụ nhanh -->
                 <h6 class="text-uppercase text-secondary text-xs fw-bolder mb-3">Tác vụ Quản trị viên</h6>
                 <div class="d-grid gap-2">
-                    @if (Model.Status == 0 || Model.Status == 10)
+                    @if (Model.Status == 0 || Model.Status == 10 || Model.Status == 101 || Model.Status == 102)
                     {
                         <form asp-action="UpdateStatus" method="post" class="m-0 d-grid">
                             <input type="hidden" name="id" value="@Model.Id" />

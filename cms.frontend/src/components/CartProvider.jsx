@@ -18,9 +18,9 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('wine_cart', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const addToast = useCallback((title, message, type = 'success') => {
+    const addToast = useCallback((title, message, type = 'success', imageUrl = null) => {
         const id = Date.now() + Math.random();
-        setToasts(prev => [...prev, { id, title, message, type }]);
+        setToasts(prev => [...prev, { id, title, message, type, imageUrl }]);
         setTimeout(() => {
             setToasts(prev => prev.filter(t => t.id !== id));
         }, 3500);
@@ -42,7 +42,7 @@ export const CartProvider = ({ children }) => {
             }
             return [...prev, { ...product, quantity }];
         });
-        addToast('Thêm vào giỏ hàng', `${product.name} x${quantity} đã được thêm!`, 'success');
+        addToast('Thêm vào giỏ hàng', `${product.name} x${quantity} đã được thêm!`, 'success', product.imageUrl);
     }, [addToast]);
 
     const updateQuantity = useCallback((id, quantity) => {

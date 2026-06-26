@@ -19,14 +19,29 @@ namespace CMS.BA.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(
+            [FromQuery] string keyword = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 12)
         {
-            var categories = _context.CategoriesProducts
+            var query = _context.CategoriesProducts.AsQueryable();
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                var kw = keyword.ToLower();
+                query = query.Where(c => c.Name.ToLower().Contains(kw) || c.Description.ToLower().Contains(kw));
+            }
+
+            var categories = query
+                .OrderBy(c => c.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(c => new
                 {
                     c.Id,
                     c.Name,
-                    c.Description
+                    c.Description,
+                    c.ImageUrl
                 })
                 .ToList();
 

@@ -130,25 +130,55 @@ namespace CMS.BA.Controllers
             {
                 return Unauthorized(new { message = "Bạn không có quyền xem lịch sử đơn hàng này" });
             }
-            var history = _context.Orders
+            var orders = _context.Orders
                 .Where(o => o.CustomerId == customerId)
                 .OrderByDescending(o => o.OrderDate)
-                .Select(o => new
-                {
-                    o.Id,
-                    o.OrderDate,
-                    o.TotalAmount,
-                    o.Status,
-                    Details = o.OrderDetails.Select(od => new
-                    {
-                        od.ProductId,
-                        od.Product.Name,
-                        od.Product.ImageUrl,
-                        od.Quantity,
-                        od.UnitPrice
-                    }).ToList()
-                })
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
                 .ToList();
+
+            var allRefunds = new List<CMS.Backend.Services.PartialRefundRecord>();
+            try
+            {
+                var partialRefundPath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "PartialRefunds.json");
+                if (System.IO.File.Exists(partialRefundPath))
+                {
+                    var json = System.IO.File.ReadAllText(partialRefundPath);
+                    allRefunds = System.Text.Json.JsonSerializer.Deserialize<List<CMS.Backend.Services.PartialRefundRecord>>(json) ?? new List<CMS.Backend.Services.PartialRefundRecord>();
+                }
+            }
+            catch { }
+
+            var history = orders.Select(o => new
+            {
+                o.Id,
+                o.OrderDate,
+                o.TotalAmount,
+                o.Status,
+                Details = o.OrderDetails.Select(od => new
+                {
+                    ProductId = od.ProductId,
+                    Name = od.Product?.Name ?? "Sản phẩm",
+                    ImageUrl = od.Product?.ImageUrl,
+                    Quantity = od.Quantity,
+                    UnitPrice = od.UnitPrice,
+                    IsCancelled = false,
+                    RefundStatus = "",
+                    RefundAmount = 0m
+                }).Concat(
+                    allRefunds.Where(r => r.OrderId == o.Id).Select(r => new
+                    {
+                        ProductId = r.ProductId,
+                        Name = r.ProductName,
+                        ImageUrl = _context.Products.FirstOrDefault(p => p.Id == r.ProductId)?.ImageUrl,
+                        Quantity = 1,
+                        UnitPrice = r.RefundAmount,
+                        IsCancelled = true,
+                        RefundStatus = r.Status,
+                        RefundAmount = r.RefundAmount
+                    })
+                ).ToList()
+            }).ToList();
 
             return Ok(history);
         }
@@ -178,8 +208,8 @@ namespace CMS.BA.Controllers
                 order.Status = 3;
                 finalStatus = 3;
             }
-            // Nếu đơn hàng ở trạng thái 10 (Chờ duyệt MoMo) -> Yêu cầu hoàn tiền (Status 13)
-            else if (order.Status == 10)
+            // Nếu đơn hàng ở trạng thái 10, 101, 102 (Đã thanh toán MoMo) -> Yêu cầu hoàn tiền (Status 13)
+            else if (order.Status == 10 || order.Status == 101 || order.Status == 102)
             {
                 order.Status = 13;
                 finalStatus = 13;

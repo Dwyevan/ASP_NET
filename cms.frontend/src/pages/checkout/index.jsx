@@ -21,6 +21,7 @@ const Checkout = () => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
+    const [completedOrder, setCompletedOrder] = useState(null);
 
     if (cartItems.length === 0 && !orderSuccess) {
         navigate('/shop');
@@ -68,6 +69,12 @@ const Checkout = () => {
                 }
             }
 
+            setCompletedOrder({
+                orderId: response.orderId || response.OrderId || "N/A",
+                items: [...cartItems],
+                total: getCartTotal(),
+                formData: { ...formData }
+            });
             clearCart();
             setOrderSuccess(true);
             addToast('Đặt hàng thành công!', 'Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.', 'success');
@@ -79,34 +86,73 @@ const Checkout = () => {
         }
     };
 
-    // Success Page
-    if (orderSuccess) {
+    // Success Page (Invoice UI)
+    if (orderSuccess && completedOrder) {
         return (
-            <div>
-                <div className="page-banner">
-                    <div className="container">
-                        <h1 className="font-serif">Đặt Hàng Thành Công</h1>
-                    </div>
-                </div>
-                <div className="container" style={{ padding: '60px 15px' }}>
-                    <div style={{ maxWidth: '550px', margin: '0 auto', background: '#fff', borderRadius: 'var(--radius-lg)', padding: '50px 40px', border: '1px solid var(--border-light)', textAlign: 'center' }}>
-                        <div className="success-icon">
-                            <i className="fa-solid fa-check"></i>
+            <div style={{ background: '#f8f9fa', minHeight: '80vh', padding: '60px 15px' }}>
+                <div className="container">
+                    <div style={{ maxWidth: '600px', margin: '0 auto', background: '#fff', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', border: '1px solid #e0e0e0' }}>
+                        
+                        {/* Header Biên lai */}
+                        <div style={{ background: '#27AE60', color: '#fff', padding: '30px', textAlign: 'center', position: 'relative' }}>
+                            <div style={{ width: '60px', height: '60px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 15px', fontSize: '24px' }}>
+                                <i className="fa-solid fa-check"></i>
+                            </div>
+                            <h2 className="font-serif mb-1" style={{ fontSize: '1.8rem', color: '#fff' }}>Đặt Hàng Thành Công</h2>
+                            <p style={{ margin: 0, opacity: 0.9 }}>Cảm ơn bạn đã mua sắm tại DuyCMS!</p>
+                            
+                            {/* Zigzag bottom border effect */}
+                            <div style={{ position: 'absolute', bottom: '-10px', left: 0, right: 0, height: '10px', background: 'radial-gradient(circle, #fff 5px, transparent 6px) repeat-x', backgroundSize: '20px 20px', backgroundPosition: 'bottom' }}></div>
                         </div>
-                        <h2 className="font-serif mb-3" style={{ fontSize: '1.8rem' }}>Cảm Ơn Quý Khách!</h2>
-                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '10px' }}>
-                            Đơn hàng của quý khách <strong style={{ color: 'var(--text-primary)' }}>{formData.fullName}</strong> đã được tiếp nhận thành công.
-                        </p>
-                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '30px' }}>
-                            Bộ phận chăm sóc khách hàng sẽ liên hệ xác nhận trong thời gian sớm nhất. Nếu cần hỗ trợ, vui lòng gọi <strong style={{ color: 'var(--wine-burgundy)' }}>1900 8888</strong>.
-                        </p>
-                        <div className="d-flex justify-content-center" style={{ gap: '12px', flexWrap: 'wrap' }}>
-                            <Link to="/" className="btn btn-outline-gold">
-                                <i className="fa-solid fa-house mr-2"></i> Trang chủ
-                            </Link>
-                            <Link to="/shop" className="btn btn-gold">
-                                <i className="fa-solid fa-store mr-2"></i> Tiếp tục mua sắm
-                            </Link>
+
+                        {/* Nội dung Biên lai */}
+                        <div style={{ padding: '40px 30px 30px' }}>
+                            <div className="text-center mb-4 pb-4" style={{ borderBottom: '1px dashed #ddd' }}>
+                                <div style={{ fontSize: '0.9rem', color: '#777', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '5px' }}>Mã đơn hàng</div>
+                                <h3 className="fw-bold m-0" style={{ color: '#333' }}>#{completedOrder.orderId}</h3>
+                            </div>
+
+                            <div className="mb-4">
+                                <h5 className="fw-bold mb-3" style={{ fontSize: '1.1rem', color: '#444' }}>Thông tin giao hàng</h5>
+                                <div className="d-flex mb-2">
+                                    <i className="fa-regular fa-user text-muted mt-1 me-3" style={{ width: '16px' }}></i>
+                                    <div><span className="fw-bold">{completedOrder.formData.fullName}</span> - {completedOrder.formData.phone}</div>
+                                </div>
+                                <div className="d-flex mb-2">
+                                    <i className="fa-solid fa-location-dot text-muted mt-1 me-3" style={{ width: '16px' }}></i>
+                                    <div>{completedOrder.formData.address}</div>
+                                </div>
+                                <div className="d-flex mb-2">
+                                    <i className="fa-solid fa-money-bill-wave text-muted mt-1 me-3" style={{ width: '16px' }}></i>
+                                    <div><span className="badge bg-success" style={{ padding: '6px 10px' }}>Thanh toán khi nhận hàng (COD)</span></div>
+                                </div>
+                            </div>
+
+                            <div className="mb-4 pb-4" style={{ borderBottom: '1px dashed #ddd' }}>
+                                <h5 className="fw-bold mb-3" style={{ fontSize: '1.1rem', color: '#444' }}>Chi tiết đơn hàng</h5>
+                                {completedOrder.items.map((item, index) => (
+                                    <div key={index} className="d-flex justify-content-between mb-3 align-items-center">
+                                        <div className="d-flex align-items-center">
+                                            <span className="fw-bold text-muted me-3">{item.quantity} x</span>
+                                            <div style={{ maxWidth: '250px' }}>
+                                                <div className="text-truncate" style={{ fontWeight: 500, color: '#333' }}>{item.product.name}</div>
+                                            </div>
+                                        </div>
+                                        <div className="fw-bold">{formatCurrency(item.product.price * item.quantity)}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="d-flex justify-content-between align-items-center mb-4">
+                                <span className="text-uppercase fw-bold text-muted" style={{ fontSize: '1.1rem' }}>Tổng thanh toán</span>
+                                <span className="fw-bold" style={{ fontSize: '1.5rem', color: 'var(--wine-burgundy)' }}>{formatCurrency(completedOrder.total)}</span>
+                            </div>
+
+                            <div className="text-center">
+                                <Link to="/shop" className="btn btn-gold w-100 py-3" style={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                                    <i className="fa-solid fa-store me-2"></i> Tiếp Tục Mua Sắm
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -81,10 +81,11 @@ namespace CMS.BA.Controllers
                 
                 string amountStr = amount.ToString();
                 
-                string orderId = parsedOrderId.ToString() + "_" + DateTime.Now.Ticks.ToString();
+                string requestType = !string.IsNullOrEmpty(request.RequestType) ? request.RequestType : "captureWallet";
+                // Nhúng requestType vào orderId để IPN có thể biết được phương thức thanh toán
+                string orderId = parsedOrderId.ToString() + "_" + requestType + "_" + DateTime.Now.Ticks.ToString();
                 string requestId = Guid.NewGuid().ToString();
                 string extraData = ""; 
-                string requestType = !string.IsNullOrEmpty(request.RequestType) ? request.RequestType : "captureWallet";
 
                 // Đảm bảo rawHash đúng thứ tự alpha: accessKey, amount, extraData, ipnUrl, orderId, orderInfo, partnerCode, redirectUrl, requestId, requestType
                 string rawHash = $"accessKey={accessKey}&amount={amountStr}&extraData={extraData}&ipnUrl={ipnUrl}&orderId={orderId}&orderInfo={orderInfo}&partnerCode={partnerCode}&redirectUrl={redirectUrl}&requestId={requestId}&requestType={requestType}";
@@ -149,7 +150,10 @@ namespace CMS.BA.Controllers
                 
                 if (!string.IsNullOrEmpty(receivedOrderId))
                 {
-                    string idPart = receivedOrderId.Split('_')[0];
+                    var parts = receivedOrderId.Split('_');
+                    string idPart = parts[0];
+                    string reqType = parts.Length > 1 ? parts[1] : "captureWallet";
+                    
                     if (int.TryParse(idPart, out int orderId))
                     {
                         var order = _context.Orders.Find(orderId);
@@ -157,7 +161,12 @@ namespace CMS.BA.Controllers
                         {
                             if (resultCodeStr == "0") // Thành công
                             {
-                                order.Status = 10; // Đã thanh toán MoMo (Chờ duyệt)
+                                if (reqType == "payWithATM") 
+                                    order.Status = 101; // Thẻ ATM Nội Địa
+                                else if (reqType == "payWithCC") 
+                                    order.Status = 102; // Thẻ Visa/Mastercard
+                                else 
+                                    order.Status = 10; // Đã thanh toán Ví MoMo (Chờ duyệt)
                             }
                             else // Thất bại
                             {
